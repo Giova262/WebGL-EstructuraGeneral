@@ -31,10 +31,8 @@ class Esfera extends Dibujable {
 
                 /** Vertice Propiedades */
                 this.position_list.push( ...[x1,  y1, z1] );
-
-                this.color_list.push(...this.color);
     
-                this.normal_list.push( 0, 0, 1 );
+                this.normal_list.push( ...[x1,  y1, z1]  );
     
                 this.textura_list.push( j / this.filas  );
                 this.textura_list.push( 1 - ( i / this.columnas ) );
@@ -45,11 +43,10 @@ class Esfera extends Dibujable {
         this.position_buffer = gl.createBuffer();                               
         gl.bindBuffer(gl.ARRAY_BUFFER, this.position_buffer);                   
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_list), gl.STATIC_DRAW);   
-            
-        /** Creo buffer de Color */
-        this.color_buffer = gl.createBuffer();                               
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);                   
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.color_list), gl.STATIC_DRAW);   
-           
+                    
+    }
+
+    linesStripDraw(_condicion){
+        this.useLines = _condicion;
     }
 }

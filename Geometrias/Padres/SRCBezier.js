@@ -23,7 +23,6 @@ class SRCBezier{
    
            /** Listas de datos */
            this.position_list = [];
-           this.color_list = [];
            this.textura_list = [];
            this.normal_list = [];
            this.tangente_list = [];
@@ -31,7 +30,6 @@ class SRCBezier{
    
            /** Buffers */
            this.position_buffer = [];
-           this.color_buffer = [];
            this.textura_buffer = [];
            this.normal_buffer = [];
            this.tangente_buffer = [];
@@ -87,7 +85,9 @@ class SRCBezier{
              
                 //Posicion/color
 				this.position_list.push(...[posicion[0], posicion[1], posicion[2]]);
-                this.color_list.push(...this.color);           
+                this.normal_list.push( 0, 0, 1 );
+                this.textura_list.push( j / this.puntosRevolucion );
+                this.textura_list.push( 1 - ( i / this.curva.length ) );         
             } 
         }
 
@@ -109,11 +109,6 @@ class SRCBezier{
         gl.bindBuffer(gl.ARRAY_BUFFER, this.position_buffer);                   
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_list), gl.STATIC_DRAW);   
             
-        /** Creo buffer de Color */
-        this.color_buffer = gl.createBuffer();                               
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);                   
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.color_list), gl.STATIC_DRAW);   
-
         /** Creo buffer de Indices */
         this.index_buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
@@ -126,14 +121,14 @@ class SRCBezier{
         gl.enableVertexAttribArray(vertexPositionLocation);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.position_buffer);
         gl.vertexAttribPointer(vertexPositionLocation, 3, gl.FLOAT, false, 0, 0);
-    
-        /** Colores */
-        gl.enableVertexAttribArray(vertexColorLocation);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);
-        gl.vertexAttribPointer(vertexColorLocation, 3, gl.FLOAT, false, 0, 0);
 
         /** Dibujar */
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
-        gl.drawElements( gl.LINE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);    
+        if(this.useLines){
+            gl.drawElements( gl.LINE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);    
+        }else{
+            gl.drawElements( gl.TRIANGLE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);
+        } 
+       // gl.drawElements( gl.LINE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);    
     }
 }

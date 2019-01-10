@@ -162,7 +162,7 @@ class Camara{
         mat4.lookAt(viewMatrix, [x, y, z], [0, 0, 0], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
         
-        //gl.uniform3f(cameraPosLocation,x,y,z);
+        gl.uniform3f(cameraPositionLocation,x,y,z);
 
         radio2 = 0;
         x2 = 0;
@@ -196,7 +196,7 @@ class Camara{
 
         mat4.lookAt(viewMatrix, [x2, y2, 15], [x, y, z], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix); 
-       // gl.uniform3f(cameraPosLocation,...[x2, y2, 15]);
+        gl.uniform3f(cameraPositionLocation,...[x2, y2, 15]);
 
     }
 

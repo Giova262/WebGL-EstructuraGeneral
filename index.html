@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <html>
     <head>
         <title> Proyecto 3 </title>
@@ -10,7 +10,6 @@
         <!-- Librerias-->
         <script type="text/javascript" src="Librerias/gl-matrix.js"></script>
         <script type="text/javascript" src="Librerias/jquery-1.12.4.js"></script>
-        <script type="text/javascript" src="Librerias/dat.gui.js"></script>
         <script type="text/javascript" src="Librerias/three.min.js"></script>
        
         <!-- JavaScript -->
@@ -29,24 +28,80 @@
         <script id="shader-vs" type="x-shader/x-vertex">
 
             attribute vec3 aVertexPosition;
-            attribute vec3 aVertexColor;
+            attribute vec2 aVertexTexCoord;
+            attribute vec3 aVertexNormal;
+            attribute vec3 aVertexTangente;
 
-            uniform mat4 uMM;
-            uniform mat4 uVM;
-            uniform mat4 uPM;
+            uniform mat4 uMMatrix;
+            uniform mat4 uVMatrix;
+            uniform mat4 uPMatrix; 
+            uniform mat3 uNMatrix;
 
-            varying highp vec3 vColor;
+            uniform vec3 ulightPos;   
+            uniform vec3 uCameraPos;
 
-            void main(void){
+            uniform  float offset;
+            
+            uniform bool useNormalMapVertex;
+            uniform bool useTextureAnimacion;
+            uniform bool useDisplacementMap;
 
-                /** POSICION EN EL MUNDO*/
-                vec4 P = uMM * vec4(aVertexPosition,1.0);
+            uniform sampler2D uDisplacementSampler;
 
-                /** PASO EL COLOR*/
-                vColor = aVertexColor;
+            varying highp vec2 vTextureCoord;  
+            varying highp vec3 vN;
+            varying highp vec3 vV;
+            varying highp vec3 vS;  
 
-                /** PONGO LA POSICION*/
-                gl_Position = uPM * uVM * P;
+            void main(void) {
+
+                /** POSICION DEL PUNTO EN EL MUNDO */
+                vec4 P = uMMatrix * vec4(aVertexPosition, 1.0);
+
+                /** DISPLACEMENT MAP */
+
+                if(useDisplacementMap){
+                    float f_blue = texture2D(uDisplacementSampler, aVertexTexCoord).r;
+                    P.z += f_blue * 10.0;
+                }
+                
+                /** MAPA DE NORMALES */
+                if(useNormalMapVertex){
+
+                    vec3 Normal = uNMatrix * aVertexNormal;
+                    vec3 Tangente = uNMatrix * aVertexTangente;
+                    vec3 Binormal = cross(Normal, Tangente);
+
+                    mat3 tbnMatrix = mat3(
+                        Tangente.x, Binormal.x, Normal.x,
+                        Tangente.y, Binormal.y, Normal.y,
+                        Tangente.z, Binormal.z, Normal.z
+                    );
+
+                    vN  = uNMatrix * aVertexNormal ;
+                    vV  = vec3( vec4(uCameraPos,1.0) - P ) * tbnMatrix ;
+                    vS  = vec3( vec4(ulightPos ,1.0) - P ) * tbnMatrix ;
+
+                }else{
+                    
+                    vN  = uNMatrix * aVertexNormal ;
+                    vV  = vec3( vec4(uCameraPos,1.0) - P ) ;
+                    vS  = vec3( vec4(ulightPos ,1.0) - P ) ;
+                }
+
+
+                /** ANIMACION */ 
+                if(useTextureAnimacion){
+                    vTextureCoord = offset * vec2(1.0, 0.0) + aVertexTexCoord;
+                        if( vTextureCoord.x >= 1.0 ) vTextureCoord.x -= 1.0;
+                }else{
+                    vTextureCoord =  aVertexTexCoord;
+                }
+                
+               
+                /** POSICION */
+                gl_Position = uPMatrix * uVMatrix * P;
+                
             }
 
         </script>
@@ -54,10 +109,71 @@
         <!-- Fragment Shader-->
         <script id="shader-fs" type="x-shader/x-fragment">
             
-            varying highp vec3 vColor;
-            
-            void main(void){
-                gl_FragColor = vec4(vColor,1.0);
+            precision mediump float;
+
+            uniform  vec3 difusa_color;
+            uniform  vec3 specular_color;
+            uniform  vec3 ambient_color;
+            uniform  float intensidad;
+            uniform  float ka;
+            uniform  float kd;
+            uniform  float ks;
+            uniform  float n;
+            uniform sampler2D uTexturaSampler;
+            uniform sampler2D uNormalSampler;
+            uniform bool useTexture;
+            uniform vec3 color_default;
+
+            uniform bool useNormalMapFragment;
+
+            varying highp vec2 vTextureCoord;  
+            varying highp vec3 vN;
+            varying highp vec3 vV;
+            varying highp vec3 vS;   // Source Sol
+
+            void main(void) {
+
+                highp vec3 N;
+                highp vec3 V = normalize(vV);  
+                highp vec4 texelColor = texture2D(uTexturaSampler, vTextureCoord);
+               
+
+             /** NORMAL MAPPING*/
+
+                if(useNormalMapFragment){
+                     N = normalize(2.0 * (texture2D(uNormalSampler, vTextureCoord).rgb - 0.5));
+                }else{
+                     N = normalize(vN);
+                }
+
+            /** ILUMINACION */
+
+                float distancia_ = sqrt(pow(vS[0], 2.0) + pow(vS[1], 2.0) + pow(vS[2], 2.0)); // modulo del vector
+                float ajuste = intensidad / distancia_ ; // Como decae aca debe ser mas complejo
+
+                highp vec3 S = normalize(vS);  // Source Sol
+                highp vec3 R = reflect(-S,N);   // Refleccion 1
+
+                highp vec3 ambient  = ka * ambient_color * ajuste ;
+                highp vec3 diffuse  = kd * difusa_color * max( dot(N,S),0.0) * ajuste ;
+                highp vec3 specular = ks * specular_color * pow( max(dot(R,V),0.0) ,n) * ajuste ;
+
+             
+            /** TEXTURA*/
+
+                if(useTexture) {   
+
+                    highp vec4 f_color1 = vec4( specular ,1.0) + vec4(ambient + diffuse  ,1.0) * texelColor;
+                    gl_FragColor =  f_color1  ;
+                 
+				}else{     
+
+                    highp vec4 f_color1 = vec4( ambient+  diffuse + specular, 1.0);
+                    highp vec4 f_color =  f_color1 ;
+
+                    gl_FragColor =  f_color * vec4(color_default,1.0);
+                }
+
             }
 
         </script>
@@ -65,6 +181,11 @@
     <body onload="main()">
 
         <h1> Creacion de objeto</h1>
+
+        <!-- Imagenes-->
+        <img id="tierra-textura" crossOrigin = "anonymous" src="https://ichef.bbci.co.uk/news/624/cpsprodpb/15427/production/_92397078_flat_earth.png"  width="0" height="0"></img>  
+        <img id="tierra-normal" crossOrigin = "anonymous" src="https://ichef.bbci.co.uk/news/624/cpsprodpb/15427/production/_92397078_flat_earth.png"  width="0" height="0"></img>
+      
 
         <center>
             <canvas id="canvas" width="1200" height="800">

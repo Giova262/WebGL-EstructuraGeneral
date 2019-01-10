@@ -9,19 +9,17 @@ class Dibujable{
         this.filas = _filas;
         this.columnas = _columnas;
         this.color = _color;
-
         this.textura = null;
         this.texturaNormal = null;
 
         /** Condicionales */
         this.useTextura = false;
-        this.useTexturaNormal = false;
+        this.useNormalMap = false;
         this.useLines = false;
-        this.useLight = true;
+        this.useLight = true; //Falta este
 
         /** Listas de datos */
         this.position_list = [];
-        this.color_list = [];
         this.textura_list = [];
         this.normal_list = [];
         this.tangente_list = [];
@@ -29,12 +27,12 @@ class Dibujable{
 
         /** Buffers */
         this.position_buffer = [];
-        this.color_buffer = [];
         this.textura_buffer = [];
         this.normal_buffer = [];
         this.tangente_buffer = [];
         this.index_buffer = [];   
     }
+
 
     initIndex(){
     
@@ -61,19 +59,59 @@ class Dibujable{
 
     dibujar(){
 
+        /** Color Defecto */
+        gl.uniform3f(colorDefaultLocation,...this.color );
+
         /** Posiciones */
         gl.enableVertexAttribArray(vertexPositionLocation);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.position_buffer);
         gl.vertexAttribPointer(vertexPositionLocation, 3, gl.FLOAT, false, 0, 0);
-    
-        /** Colores */
-        gl.enableVertexAttribArray(vertexColorLocation);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);
-        gl.vertexAttribPointer(vertexColorLocation, 3, gl.FLOAT, false, 0, 0);
 
+        /** Tangente */
+        gl.enableVertexAttribArray(vertexTangenteLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.tangeteBuffer);
+        gl.vertexAttribPointer(vertexTangenteLocation, 3, gl.FLOAT, false, 0, 0);
+              
+        /** Normales */
+        gl.enableVertexAttribArray(vertexNormalLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+        gl.vertexAttribPointer(vertexNormalLocation, 3, gl.FLOAT, false, 0, 0);
+        
+        if(this.useTextura){
+
+            gl.uniform1i(useTextureLocation, true);
+                // Textura
+            gl.enableVertexAttribArray(vertexTexturaLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
+            gl.vertexAttribPointer(vertexTexturaLocation, 2, gl.FLOAT, false, 0, 0);
+
+                // Mapa difuso     
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.textura);
+            gl.uniform1i(samplerTexturaLocation, 0);
+
+                //Mapa de normal( Aca poner el correspondiente Mapa)
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, this.texturaNormal);
+            gl.uniform1i(samplerTexturaNormalLocation, 1);
+
+                //Mapa de displacement( Aca poner el correspondiente Mapa)
+            gl.activeTexture(gl.TEXTURE2);
+            gl.bindTexture(gl.TEXTURE_2D, this.texturaNormal);
+            gl.uniform1i(samplerDisplacementLocation, 2);
+
+        }else{
+            gl.uniform1i(useTextureLocation, false);
+			gl.disableVertexAttribArray(vertexTexturaLocation);
+        }
+    
         /** Dibujar */
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
-        gl.drawElements( gl.LINE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);    
+        if(this.useLines){
+            gl.drawElements( gl.LINE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);    
+        }else{
+            gl.drawElements( gl.TRIANGLE_STRIP, this.index_list.length, gl.UNSIGNED_SHORT, 0);
+        }     
     }
 
 

@@ -43,4 +43,8 @@ class Dona extends SRCBezier{
         this.tramos = this.puntosControl.length / 4.0 ;
     }
 
+    linesStripDraw(_condicion){
+        this.useLines = _condicion;
+    }
+
 }
