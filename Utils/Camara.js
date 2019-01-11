@@ -1,4 +1,4 @@
-/** Camara class */
+/** Arreglar Bug del zoom o usar la camara de Three.js*/
 
 var previousClientX = 0,
     previousClientY = 0,

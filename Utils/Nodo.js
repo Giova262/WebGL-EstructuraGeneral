@@ -1,0 +1,10 @@
+class Nodo{
+    
+    constructor(){
+
+    }
+
+    dibujar(){
+
+    }
+}

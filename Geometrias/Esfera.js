@@ -61,7 +61,7 @@ class Esfera extends Dibujable{
                 vec3.normalize(normal,normal);
                 this.normal_list.push(...normal);
 
-                /** Tangente ( Producto vectorial entre N y [0,0,1])*/
+                /** Tangente */
                 var tangente = [(y*1)-(z*0), -( (x*1)-(z*0)  ), (x*0)-(y*0) ];
                 this.tangente_list.push( ...tangente );
             }

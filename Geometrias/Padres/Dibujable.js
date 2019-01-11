@@ -3,6 +3,7 @@ class Dibujable{
 
     constructor(){
 
+        /** Formato de vertices */
          this.drawTipo = gl.TRIANGLES;
 
          /** Vectores */
@@ -18,7 +19,6 @@ class Dibujable{
 		 this.tangente_buffer = gl.createBuffer();
 		 this.texture_buffer = gl.createBuffer();
          this.index_buffer = gl.createBuffer();
-  
     }
 
     setDrawType(_type){

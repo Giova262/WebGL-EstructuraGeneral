@@ -10,26 +10,31 @@ class Prototipo{
 
     configuracion(){
 
+        /** Valores de mapas */
         this.plano.setMapaDifuso(ejemplo_textura);
         this.plano.setMapaNormal(ejemplo_normal);
         this.plano.setMapaRelieve(ejemplo_normal);
 
+        /** Estilo */
         this.plano.textura(true);
         this.plano.normalMap(true);
         this.plano.relieve(true);
         this.plano.animacion(false);
 
+        /** Iluminacion */
         this.plano.phongCoheficientes(1,1,1,60);
 
+        /** Movimientos iniciales */
         this.plano.escalar([1,1,1]);
         this.plano.rotar(0,[0,0,1]);
         this.plano.trasladar([0,0,0]);
 
+        /** Formato de vetices */
         this.plano.setDrawType(gl.TRIANGLES);
     }
 
     update(){
-        //Posibles movimientos
+        //Posibles movimientos con el tiempo
     }
 
     dibujar(){

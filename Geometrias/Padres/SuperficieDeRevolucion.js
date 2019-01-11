@@ -69,7 +69,7 @@ class SuperficieDeRevolucion extends Dibujable{
             } 	
         }   
 
-        /** Posicion/Normales/UV/Tangentes/Color */
+        /** Atributos */
         for(var i=0 ; i < this.curva.length ; i = i +3){
 
             for(var j=0 ; j<this.puntosRevolucion;j++){
@@ -79,7 +79,7 @@ class SuperficieDeRevolucion extends Dibujable{
                 var normal = vec3.create();
                 vec3.cross(normal, tangente, [0.0, -1.0, 0.0]);
                 
-                //Rotacion
+                /** Rotacion sobre el eje Z */
                 var matrix = mat4.create();
                 mat4.identity(matrix);
                 mat4.rotate(matrix,matrix, j * this.angulo /(this.puntosRevolucion-1), [0.0, 0.0, 1.0]);
@@ -89,12 +89,7 @@ class SuperficieDeRevolucion extends Dibujable{
                 vec3.transformMat4(normal, normal, matrix);
                 vec3.normalize(normal, normal);
 
-                //var normal = vec3.create();
-                //vec3.cross(normal, tangente, [0.0, -1.0, 0.0]);
-                
-			
-
-                //Atributos
+                /** Atributos */
                 this.position_list.push(...[posicion[0], posicion[1], posicion[2]]);     
                 this.normal_list.push( ...normal);
                 this.tangente_list.push(...[tangente[0], tangente[1], tangente[2]]);
@@ -103,7 +98,7 @@ class SuperficieDeRevolucion extends Dibujable{
             } 
         }
 
-        /** Lista de indices */
+        /** Indices */
         var jump = 0 ;
 
         for(var i = 0 ; i< this.puntosCurva -1 ; i++){
@@ -112,6 +107,7 @@ class SuperficieDeRevolucion extends Dibujable{
                 this.index_list.push(j + jump );
                 this.index_list.push(this.puntosRevolucion + j + jump );    
             }
+
             jump = jump + this.puntosRevolucion;        
         }    
      

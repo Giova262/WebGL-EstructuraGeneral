@@ -1,8 +1,8 @@
 
 class Dona extends SuperficieDeRevolucion{
+
     constructor(_puntosCurva,_puntosRevolucion,_angulo,_radioInt,_radioExt,_alturaMin,_alturaMax,_color){
 
-        console.log(_alturaMax);
         super(_puntosCurva,_puntosRevolucion,_angulo,_color);
 
         this.radioInterior = _radioInt;

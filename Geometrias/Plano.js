@@ -11,9 +11,7 @@ class Plano extends Dibujable{
         this.columnas = columnas;
         this.color = color;
 
-        /** Init */
         this.init();
-
     }
 
     init(){

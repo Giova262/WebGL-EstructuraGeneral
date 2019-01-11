@@ -18,7 +18,7 @@ class Objeto{
         this.ka = 1;
         this.kd = 1;
         this.ks = 1;
-        this.n = 1;
+        this.n = 60;
 
         /** Matrices */
         this.padreMatrix = mat4.create();        

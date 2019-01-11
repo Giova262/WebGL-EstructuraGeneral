@@ -1,4 +1,4 @@
-/** Menu con Gui */
+/** Menu Ejemplo con Gui */
 
 var obj = {
 

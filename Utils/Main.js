@@ -4,12 +4,12 @@
 var     canvas = null;
         gl = null;
         glProgram = null;
-        offset = 0.0;
-        run = true;
 
     /** Tiempo */
 
-        tiempo = 0;
+        tiempo = 0.0;
+        offset = 0.0;
+        run = true;
     
     /** Localizaciones  */
 
@@ -60,7 +60,7 @@ var     canvas = null;
         prototipo = null;
         
 
-/** Inicio de todo  */
+/** Inicio */
 function main(){
 
     initWebGL();
@@ -71,6 +71,40 @@ function main(){
     initObjects();
     setInterval(draw,10);
 }
+
+function initObjects(){
+
+    /** Camara */
+    camara = new Camara();
+
+    /** Escena */
+    prototipo = new Prototipo();
+   
+}
+
+function draw(){
+
+    /** Clear */
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      
+    /** Vista */
+    camara.event();
+    camara.update();
+
+    /** Update */
+    if(run){
+        tiempo += 200;     
+    }
+
+    /** Offset */
+    offset +=  0.0001; 
+    if( offset >= 1) offset = 0.0;
+    
+    /** Dibujo */
+    prototipo.dibujar();
+}
+
+/** Configuraciones Generales */
 
 function initWebGL(){
 
@@ -84,7 +118,8 @@ function initWebGL(){
     
     if(!gl) alert(" No se puedo iniciar WebGL , Lo siento ");
     
-    gl.clearColor(1.0,1.0,1.0,1.0);
+    /** Color con el que se limpia la pantalla */
+    gl.clearColor(0.0,0.7,1.0,1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     gl.viewport(0,0, canvas.width , canvas.height);
@@ -137,40 +172,42 @@ function makeShader(src, type){
 
 function initLocalitations(){
 
-        //Atributos
+    /** Atributos */
     vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
     vertexTextureAttribute  = gl.getAttribLocation(glProgram, "aVertexTexCoord");
     vertexNormalAttribute   = gl.getAttribLocation(glProgram, "aVertexNormal");
-    vertexTangenteAttribute = gl.getAttribLocation(glProgram, "aVertexTangente");       
-        //Matrices
+    vertexTangenteAttribute = gl.getAttribLocation(glProgram, "aVertexTangente");   
+
+    /**Matices */
     modelMatrixLocation  = gl.getUniformLocation(glProgram, "uMMatrix");
     viewMatrixLocation   = gl.getUniformLocation(glProgram, "uVMatrix");
     projMatrixLocation   = gl.getUniformLocation(glProgram, "uPMatrix");
     normalMatrixLocation = gl.getUniformLocation(glProgram, "uNMatrix");
-        //Textura
+
+    /** Samplers */
     sampler1Location = gl.getUniformLocation(glProgram, "uTexturaSampler");
     sampler2Location = gl.getUniformLocation(glProgram, "uNormalSampler");
     sampler3Location = gl.getUniformLocation(glProgram, "uDisplacementSampler");
-        //Pòsicion de luces
+
+    /** Phong */
+    colorDefaultLocation = gl.getUniformLocation(glProgram, "color_default");
     lightPosLocation  = gl.getUniformLocation(glProgram, "ulightPos");
-    light2PosLocation = gl.getUniformLocation(glProgram, "ulightPos2");
-        // Colores de las luces
+    light2PosLocation = gl.getUniformLocation(glProgram, "ulightPos2");  
     cameraPosLocation     = gl.getUniformLocation(glProgram, "uCameraPos");
     ambientColorLocation  = gl.getUniformLocation(glProgram, "ambient_color");
     difusaColorLocation   = gl.getUniformLocation(glProgram, "difusa_color");
-    specularColorLocation = gl.getUniformLocation(glProgram, "specular_color");
-        // Luces caracteristicas
+    specularColorLocation = gl.getUniformLocation(glProgram, "specular_color");      
     intensidadLightLocation  = gl.getUniformLocation(glProgram, "intensidad");
-    intensidadLight2Location = gl.getUniformLocation(glProgram, "intensidad2");
-        // Coheficientes de Phong
+    intensidadLight2Location = gl.getUniformLocation(glProgram, "intensidad2");       
     kaLocation = gl.getUniformLocation(glProgram, "ka");
     kdLocation = gl.getUniformLocation(glProgram, "kd");
     ksLocation = gl.getUniformLocation(glProgram, "ks");
     nLocation  = gl.getUniformLocation(glProgram, "n");
-        //Tiempo
-    offsetLocation       = gl.getUniformLocation(glProgram, "offset");
-    colorDefaultLocation = gl.getUniformLocation(glProgram, "color_default");
-        //Condicionales
+    
+    /** Animacion */
+    offsetLocation = gl.getUniformLocation(glProgram, "offset");
+
+    /** Condicionales */
     useTextureLocation         = gl.getUniformLocation(glProgram, "useTexture");
     texturaAnimacionLocation   = gl.getUniformLocation(glProgram, "useTextureAnimacion");
     useNormalMapLocation       = gl.getUniformLocation(glProgram, "useNormalMapVertex");
@@ -179,29 +216,18 @@ function initLocalitations(){
     
 }
 
-function initObjects(){
-
-    /** Camara */
-    camara = new Camara();
-
-    /** Escena */
-    prototipo = new Prototipo();
-   
-  
-}
-
 function configuracionInicial(){
 
      /** Configuracion Luz */
-     gl.uniform1f(intensidadLightLocation,10.0);
+     gl.uniform1f(intensidadLightLocation ,10.0);
      gl.uniform1f(intensidadLight2Location,0);
  
      gl.uniform3f(specularColorLocation,...[1,1,1] );
-     gl.uniform3f(ambientColorLocation,...[1,1,1] );
-     gl.uniform3f(difusaColorLocation,...[1,1,1] );
+     gl.uniform3f(ambientColorLocation ,...[1,1,1] );
+     gl.uniform3f(difusaColorLocation  ,...[1,1,1] );
   
-     gl.uniform3f(light2PosLocation, ...[-50,0,50] );
-     gl.uniform3f(lightPosLocation, ...[0,0,50] );
+     gl.uniform3f(lightPosLocation , ...[0,0,50] );
+     gl.uniform3f(light2PosLocation, ...[0,0,0]  );
  
      /** Configuracion de Proyeccion */
      mat4.identity(projMatrix);
@@ -244,25 +270,3 @@ function getTexture(_url){
 }
 
 
-function draw(){
-
-    /** Clear */
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      
-    /** Vista */
-    camara.event();
-    camara.update();
-
-    /** Update */
-    if(run){
-        tiempo += 200;     
-    }
-
-    /** Offset */
-    offset +=  0.0001; 
-    if( offset >= 1) offset = 0.0;
-    
-
-    /** Dibujo */
-    prototipo.dibujar();
-}
