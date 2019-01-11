@@ -2,7 +2,7 @@
 
 var previousClientX = 0,
     previousClientY = 0,
-    radio = 50,
+    radio = 320,
     radio2 = 0;
     escala= 1.0;
     alfa = Math.PI, 
@@ -63,7 +63,7 @@ class Camara{
                 
             }else  if( e.originalEvent.wheelDelta < 0 ){ 
                 escala = escala + 0.00002; 
-                if( escala >= 3.0 ) escala = 3.0 ;          
+                if( escala >= 1.0 ) escala = 1.0 ;          
             }
 
              /** Para evitar el scroll del fondo dentro del canvas */
@@ -151,7 +151,7 @@ class Camara{
         if (alfa<0) alfa=Math.PI*2;
         if (alfa>Math.PI*2) alfa=0;
 
-       /* if (beta<  -Math.PI/2 +0.04) beta = -Math.PI/2 + 0.04;*/
+      //  if (beta<  -Math.PI/2 +0.04) beta = -Math.PI/2 + 0.04;
         if( beta >= 0.0 ) beta =  -beta ;
 
         /** Camara update */   
@@ -162,7 +162,7 @@ class Camara{
         mat4.lookAt(viewMatrix, [x, y, z], [0, 0, 0], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
         
-        gl.uniform3f(cameraPositionLocation,x,y,z);
+        gl.uniform3f(cameraPosLocation,x,y,z);
 
         radio2 = 0;
         x2 = 0;
@@ -196,7 +196,7 @@ class Camara{
 
         mat4.lookAt(viewMatrix, [x2, y2, 15], [x, y, z], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix); 
-        gl.uniform3f(cameraPositionLocation,...[x2, y2, 15]);
+        gl.uniform3f(cameraPosLocation,...[x2, y2, 15]);
 
     }
 

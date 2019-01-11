@@ -1,30 +1,37 @@
-<!DOCTYPE html>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!doctype html>
+<meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+<meta content="ISO-8859-1" http-equiv="encoding">
+
 <html>
+
     <head>
-        <title> Proyecto 3 </title>
 
-        <!-- Stilos-->
-        <link rel="stylesheet" type="text/css" href="Estilos.css">
+        <title>Flat Earth Model</title>
 
-        <!-- Librerias-->
+        <!-- Styles -->
+        <link rel="stylesheet" type="text/css" href="Estilos.css"/>
+
+        <!-- Libraries -->
         <script type="text/javascript" src="Librerias/gl-matrix.js"></script>
         <script type="text/javascript" src="Librerias/jquery-1.12.4.js"></script>
-        <script type="text/javascript" src="Librerias/three.min.js"></script>
-       
+        <script type="text/javascript" src="Librerias/dat.gui.js"></script>
+        
         <!-- JavaScript -->
         <script type="text/javascript" src="Utils/Main.js"></script>
         <script type="text/javascript" src="Utils/Camara.js"></script>
         <script type="text/javascript" src="Utils/Objeto.js"></script>
-        
+
         <script type="text/javascript" src="Geometrias/Padres/Dibujable.js"></script>
-        <script type="text/javascript" src="Geometrias/Padres/SRCBezier.js"></script>
-      
-        <script type="text/javascript" src="Geometrias/Esfera.js"></script>
         <script type="text/javascript" src="Geometrias/Plano.js"></script>
-        <script type="text/javascript" src="Geometrias/Dona.js"></script>
+        <script type="text/javascript" src="Geometrias/Esfera.js"></script>
+        <script type="text/javascript" src="Geometrias/Cilindro.js"></script>
        
-        <!-- Vertex Shader-->
+        <script type="text/javascript" src="Entidades/Tierra.js"></script>
+        <script type="text/javascript" src="Entidades/Sol.js"></script>
+        <script type="text/javascript" src="Entidades/Luna.js"></script>
+        <script type="text/javascript" src="Entidades/Fondo.js"></script>
+
+        <!-- Vertex Shader -->
         <script id="shader-vs" type="x-shader/x-vertex">
 
             attribute vec3 aVertexPosition;
@@ -37,9 +44,10 @@
             uniform mat4 uPMatrix; 
             uniform mat3 uNMatrix;
 
-            uniform vec3 ulightPos;   
-            uniform vec3 uCameraPos;
+            uniform vec3 ulightPos;   // Posicion del Sol
+            uniform vec3 ulightPos2;  // Posicion de la Luna
 
+            uniform vec3 uCameraPos;
             uniform  float offset;
             
             uniform bool useNormalMapVertex;
@@ -51,19 +59,24 @@
             varying highp vec2 vTextureCoord;  
             varying highp vec3 vN;
             varying highp vec3 vV;
-            varying highp vec3 vS;  
+            varying highp vec3 vS;   // Source Sol
+            varying highp vec3 vS2;  // Source Luna
 
             void main(void) {
 
                 /** POSICION DEL PUNTO EN EL MUNDO */
                 vec4 P = uMMatrix * vec4(aVertexPosition, 1.0);
 
-                /** DISPLACEMENT MAP */
+                /** Displazamiento sin mover el relieve */
 
-                if(useDisplacementMap){
-                    float f_blue = texture2D(uDisplacementSampler, aVertexTexCoord).r;
-                    P.z += f_blue * 10.0;
+               /*
+
+                if(useDisplacementMap){        
+                   vec3 relieve =  normalize( texture2D(uDisplacementSampler, aVertexTexCoord).rgb ) ; 
+                   P.z += relieve.r * 15.0;
                 }
+
+               */
                 
                 /** MAPA DE NORMALES */
                 if(useNormalMapVertex){
@@ -81,23 +94,39 @@
                     vN  = uNMatrix * aVertexNormal ;
                     vV  = vec3( vec4(uCameraPos,1.0) - P ) * tbnMatrix ;
                     vS  = vec3( vec4(ulightPos ,1.0) - P ) * tbnMatrix ;
+                    vS2 = vec3( vec4(ulightPos2,1.0) - P ) * tbnMatrix ;
 
                 }else{
                     
                     vN  = uNMatrix * aVertexNormal ;
                     vV  = vec3( vec4(uCameraPos,1.0) - P ) ;
                     vS  = vec3( vec4(ulightPos ,1.0) - P ) ;
+                    vS2 = vec3( vec4(ulightPos2,1.0) - P ) ;
                 }
 
 
                 /** ANIMACION */ 
                 if(useTextureAnimacion){
                     vTextureCoord = offset * vec2(1.0, 0.0) + aVertexTexCoord;
-                        if( vTextureCoord.x >= 1.0 ) vTextureCoord.x -= 1.0;
+                    if( vTextureCoord.x >= 1.0 ) vTextureCoord.x -= 1.0;
+
+                    //Relieve con Animacion
+                    if(useDisplacementMap){
+                        vec3 relieve =  normalize( texture2D(uDisplacementSampler,vTextureCoord).rgb ) ; 
+                       // P.z += relieve.r * 15.0;
+                        P.xyz += relieve.r * 15.0 * uNMatrix * aVertexNormal;
+                    }
+
                 }else{
                     vTextureCoord =  aVertexTexCoord;
-                }
-                
+
+                    // Relieve sin Animacion
+                    if(useDisplacementMap){      
+                        vec3 relieve =  normalize( texture2D(uDisplacementSampler,vTextureCoord).rgb ) ; 
+                       // P.z += relieve.r * 15.0;
+                       P.xyz += relieve.r * 15.0 * uNMatrix * aVertexNormal;
+                    }
+                }        
                
                 /** POSICION */
                 gl_Position = uPMatrix * uVMatrix * P;
@@ -115,6 +144,7 @@
             uniform  vec3 specular_color;
             uniform  vec3 ambient_color;
             uniform  float intensidad;
+            uniform  float intensidad2;
             uniform  float ka;
             uniform  float kd;
             uniform  float ks;
@@ -130,6 +160,7 @@
             varying highp vec3 vN;
             varying highp vec3 vV;
             varying highp vec3 vS;   // Source Sol
+            varying highp vec3 vS2;  // Source Luna
 
             void main(void) {
 
@@ -148,6 +179,8 @@
 
             /** ILUMINACION */
 
+                /* Sol */
+
                 float distancia_ = sqrt(pow(vS[0], 2.0) + pow(vS[1], 2.0) + pow(vS[2], 2.0)); // modulo del vector
                 float ajuste = intensidad / distancia_ ; // Como decae aca debe ser mas complejo
 
@@ -158,40 +191,66 @@
                 highp vec3 diffuse  = kd * difusa_color * max( dot(N,S),0.0) * ajuste ;
                 highp vec3 specular = ks * specular_color * pow( max(dot(R,V),0.0) ,n) * ajuste ;
 
+        
+                /* Luna */
+
+                float distancia_2 = sqrt(pow(vS2[0], 2.0) + pow(vS2[1], 2.0) + pow(vS2[2], 2.0)); // modulo del vector
+                float ajuste2 = intensidad2 / distancia_2 ; // Como decae aca debe ser mas complejo
+
+                highp vec3 S2 = normalize(vS2);  // Source Luna
+                highp vec3 R2 = reflect(-S2,N);   // Refleccion 2
+
+                highp vec3 ambient2  = ka * ambient_color * ajuste2 ;
+                highp vec3 diffuse2  = kd * difusa_color * max( dot(N,S2),0.0) * ajuste2;
+                highp vec3 specular2 = ks * specular_color * pow( max(dot(R2,V),0.0) ,n) * ajuste2;
+
              
             /** TEXTURA*/
 
                 if(useTexture) {   
 
+                    /*
+                    highp vec3 f_color1 =  ambient  + diffuse + specular  ;
+                    highp vec3 f_color2 =  ambient2 + diffuse + specular2 ;
+                    highp vec3 f_color =  f_color1 + f_color2 ;
+                    gl_FragColor = vec4(texelColor.rgb * f_color, texelColor.a);*/
+                    
+
                     highp vec4 f_color1 = vec4( specular ,1.0) + vec4(ambient + diffuse  ,1.0) * texelColor;
-                    gl_FragColor =  f_color1  ;
+                    highp vec4 f_color2 = vec4( specular2,1.0) + vec4(ambient +diffuse2 ,1.0) * texelColor;
+                    gl_FragColor =  f_color1 + f_color2 ;
                  
-				}else{     
+				}else{  
+                    
+                    highp vec4 f_color1 = vec4( specular ,1.0) + vec4(ambient + diffuse  ,1.0) * vec4(color_default,1.0);
+                    highp vec4 f_color2 = vec4( specular2,1.0) + vec4(ambient +diffuse2 ,1.0) * vec4(color_default,1.0);
+                    gl_FragColor =  f_color1 + f_color2 ;
 
-                    highp vec4 f_color1 = vec4( ambient+  diffuse + specular, 1.0);
-                    highp vec4 f_color =  f_color1 ;
-
-                    gl_FragColor =  f_color * vec4(color_default,1.0);
                 }
 
             }
 
         </script>
+
     </head>
+
     <body onload="main()">
+        <script type="text/javascript" src="Utils/Menu.js"></script>
 
-        <h1> Creacion de objeto</h1>
-
-        <!-- Imagenes-->
-        <img id="tierra-textura" crossOrigin = "anonymous" src="https://ichef.bbci.co.uk/news/624/cpsprodpb/15427/production/_92397078_flat_earth.png"  width="0" height="0"></img>  
-        <img id="tierra-normal" crossOrigin = "anonymous" src="https://ichef.bbci.co.uk/news/624/cpsprodpb/15427/production/_92397078_flat_earth.png"  width="0" height="0"></img>
+        <img id="cielo-textura" crossOrigin = "anonymous" src="Texturas/cielo.jpg"  width="0" height="0"></img>  
+        <img id="tierra-textura" crossOrigin = "anonymous" src="Texturas/tierra.png"  width="0" height="0"></img>
+        <img id="tierra-normal" crossOrigin = "anonymous" src="Texturas/DisplacementMap2.png"  width="0" height="0"></img>
+        <img id="sol-textura" crossOrigin = "anonymous" src="Texturas/sol.jpg"  width="0" height="0"></img>
       
-
         <center>
-            <canvas id="canvas" width="1200" height="800">
-                Tu navegador no soporta el elemento canvas de HTML5
-            </canvas>
-        </center>
+            <h1> Estructura </h1>
 
+            <canvas id="canvas" width="1200" height="800">
+                Tu navegador no soporta el elemento Canvas de HTML5
+            </canvas>
+            
+        </center>
+      
     </body>
+    
 </html>

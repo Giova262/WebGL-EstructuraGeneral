@@ -1,52 +1,89 @@
-class Esfera extends Dibujable {
+/** Clase Esfera */
 
-    constructor(_ancho,_alto,_anchoSegmento,_altoSegmento,_color){
+class Esfera extends Dibujable{
 
-        super(_ancho,_alto,_anchoSegmento,_altoSegmento,_color);
+    constructor(_radio,_angulo,_color,_fila,_columnas){
 
-        this.initBuffers();
-        this.initIndex();
+        super();
+
+        /** Datos */
+        this.filas = _fila;
+        this.columnas = _columnas;
+        this.radio = _radio;
+        this.angulo = _angulo;
+        this.color = _color;  
+
+        /** Init */
+        this.init();
     }
 
-    initBuffers(){
+    init(){
 
-        var mitadAncho = this.ancho / 2;
-        var mitadAlto = this.alto / 2;
-    
-        var anchoSegmento = this.ancho / this.filas;
-        var altoSegmento = this.alto / this.columnas;
-    
-        for (var i = 0; i < this.columnas+1; i ++ ) {  
-            var y = ( i * altoSegmento ) - mitadAlto;
-            
-            for ( var j = 0; j < this.filas+1; j ++ ) {
-    
-                var x = ( j * anchoSegmento )- mitadAncho;
+        /** Atributos */
+        for(var i = 0.0 ; i< this.columnas ; i++){
+     
+            for(var j = 0.0 ; j< this.filas ; j++){
 
-                var theta = x * Math.PI *2 ; 
-                var phi = y * Math.PI * 2 ;
-                var x1 = 5*  Math.cos(theta) * Math.sin(phi);
-                var y1 = 5 * Math.sin(theta) * Math.sin(phi);
-                var z1 = 5 * Math.cos(phi);
+                var theta = j * Math.PI * 2 / (this.filas - 1);
+                var phi = i * this.angulo/ (this.columnas - 1) ;
 
-                /** Vertice Propiedades */
-                this.position_list.push( ...[x1,  y1, z1] );
-    
-                this.normal_list.push( ...[x1,  y1, z1]  );
-    
-                this.textura_list.push( j / this.filas  );
-                this.textura_list.push( 1 - ( i / this.columnas ) );
+                var x = this.radio * Math.cos(theta) * Math.sin(phi);
+                var y = this.radio * Math.sin(theta) * Math.sin(phi);
+                var z = this.radio * Math.cos(phi);
+                
+                /** Posiciones */
+                this.position_list.push(x);
+        		this.position_list.push(y);
+                this.position_list.push(z);
+   
+                
+                /** Textura */
+                var v = 1.0 - i / this.columnas ;   
+                var u =  1.0 - j / this.filas ;
+
+                /*if( j < (this.FILAS/2) ){
+                    u = j / (this.FILAS/2) ;
+                }else{
+                    u = (j / (this.FILAS/2) ) - 1 ;
+                } */
+
+                /*if( i <= (this.COLUMNAS/2) ){
+                    v = i / (this.COLUMNAS/2) ;
+                }else{
+                    v = (i / (this.COLUMNAS/2) ) - 1 ;
+                } */
+
+                this.texture_list.push(u);
+                this.texture_list.push(v);
+
+                /** Normales */
+                var normal = vec3.fromValues(x,y,z);
+                vec3.normalize(normal,normal);
+                this.normal_list.push(...normal);
+
+                /** Tangente ( Producto vectorial entre N y [0,0,1])*/
+                var tangente = [(y*1)-(z*0), -( (x*1)-(z*0)  ), (x*0)-(y*0) ];
+                this.tangente_list.push( ...tangente );
             }
+
         }
 
-        /** Creo buffer de Posiciones */
-        this.position_buffer = gl.createBuffer();                               
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.position_buffer);                   
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_list), gl.STATIC_DRAW);   
-                    
+        /** Indices */
+        var jump = 0 ;
+
+        for(var i = 0.0 ; i< this.columnas -1 ; i++){
+            for(var j = 0.0 ; j< this.filas-1 ; j++){
+                this.index_list.push(j + jump );
+                this.index_list.push(this.filas + j+ jump );
+                this.index_list.push(j+1+ jump );
+
+                this.index_list.push(j+1 + jump );
+                this.index_list.push( this.filas + j+ jump );
+                this.index_list.push( this.filas + j + 1+ jump );
+            }
+
+            jump = jump + this.filas;
+        }
     }
 
-    linesStripDraw(_condicion){
-        this.useLines = _condicion;
-    }
 }

@@ -1,169 +1,236 @@
 
-/** Variables Globales */     //TENGO UNA MESCLAS DE INGLES Y ESPAÑOL EN VARIABLES ARREGLARLO!
+/** Variables Globales */
 
-  var   canvas = null;
+var     canvas = null;
         gl = null;
         glProgram = null;
+        offset = 0.0;
+        run = true;
 
-    /** Objetos */
+    /** Tiempo */
 
-        pelota = null;
-        superficie = null;
-        superficie2 = null;
-        superficie3 = null;
-        superficie4 = null;
-        camara= null;
+        tiempo = 0;
+    
+    /** Localizaciones  */
 
-    /**Matrices */
+        vertexPositionAttribute = null,
+        vertexTextureAttribute = null,
+        vertexNormalAttribute = null;
+        vertexTangenteAttribute = null;
+        modelMatrixLocation = null;
+        viewMatrixLocation = null;
+        projMatrixLocation = null;
+        normalMatrixLocation = null;
+        useTextureLocation = null;
+        sampler1Location   = null;
+        sampler2Location   = null;
+        sampler3Location = null;
+        lightPosLocation  = null;
+        light2PosLocation = null;
+        cameraPosLocation  = null;
+        ambientColorLocation = null;
+        difusaColorLocation  = null;
+        specularColorLocation  = null; 
+        intensidadLightLocation  = null;
+        intensidadLight2Location  = null;
+        kaLocation  = null;
+        kdLocation  = null;
+        ksLocation  = null;
+        nLocation  = null;
+        offsetLocation = null;
+        colorDefaultLocation = null;
+        texturaAnimacionLocation = null;
+        useNormalMapLocation = null;
+        useNormalMapFragLocation = null;
+        useDisplacementMapLocation = null;
+      
+    /** Texturas */
+
+        cieloTextura = null;
+        solTextura = null;
+        tierraNormalTextura = null;
+        tierraDisplacementTextura = null;
+
+    /** Matrices */
 
         viewMatrix = mat4.create();
         projMatrix = mat4.create();
-
-    /**Localizaciones */
-
-        vertexPositionLocation = null;
-        vertexNormalLocation   = null;
-        vertexTangenteLocation = null;
-        vertexTexturaLocation  = null;       
-        modelMatrixLocation    = null;
-        viewMatrixLocation     = null;
-        projectMatrixLocation  = null;
-        normalMatrixLocation   = null;      
-        lighPositionLocation   = null;
-        cameraPositionLocation = null; 
-        ambienteColorLocation  = null;
-        difusaColorLocation    = null;
-        specularColorLocation  = null;
-        intensidadLocation     = null;
-        kaLocation = null;
-        kdLocation = null;
-        ksLocation = null;
-        nLocation  = null;
-        colorDefaultLocation = null;     
-        offsetLocation       = null;         
-        useNormalVertexLocation      = null;
-        useNormalFragmentLocation    = null;
-        useAnimacionLocation         = null;
-        useDisplacementLocation      = null;
-        useTextureLocation           = null;
-        samplerDisplacementLocation  = null;
-        samplerTexturaLocation       = null;
-        samplerTexturaNormalLocation = null;
     
-/** Inicio */
+    /** Objetos */
 
+        camara = null;
+        fondo = null;
+        tierra = null;
+        sol = null;
+        luna = null;
+
+/** Inicio de todo  */
 function main(){
 
     initWebGL();
     initShaders();
-    initLocations();
+    initLocalitations();   
     initTextures();
-    initObjetos();
+    initObjects();
     setInterval(draw,10);
-
 }
 
 function initWebGL(){
-    canvas = document.getElementById("canvas");
+
+    canvas= document.getElementById("canvas");
 
     try{
         gl = canvas.getContext("webgl");
     }catch(e){
-        alert("No se pudo obtener el contexto del canvas");
+        alert("Error al obtener el contexto");
     }
-
-    if(!gl) alert("No se pudo iniciar WebGl");
-
+    
+    if(!gl) alert(" No se puedo iniciar WebGL , Lo siento ");
+    
+    gl.clearColor(1.0,1.0,1.0,1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
-    gl.viewport(0,0, canvas.clientWidth, canvas.height);
+    gl.viewport(0,0, canvas.width , canvas.height);
+
 }
 
 function initShaders(){
-
+     
+    /** Obtengo el contenido de los shaders */
     var fs_source = document.getElementById('shader-fs').innerHTML;
         vs_source = document.getElementById('shader-vs').innerHTML;
 
-    var fragmentShader = makeShader(fs_source,gl.FRAGMENT_SHADER);
-          vertexShader = makeShader(vs_source,gl.VERTEX_SHADER);
+    /** Compilo los shaders */    
+    var   vertexShader = makeShader(vs_source, gl.VERTEX_SHADER);
+        fragmentShader = makeShader(fs_source, gl.FRAGMENT_SHADER);
+    
+    /** Creo el programa de shaders */
+    glProgram = gl.createProgram();
+    
+    /** Attach los shaders al program */
+    gl.attachShader(glProgram, vertexShader);
+    gl.attachShader(glProgram, fragmentShader);
 
-    glProgram = gl.createProgram(); 
-
-    gl.attachShader(glProgram,vertexShader);
-    gl.attachShader(glProgram,fragmentShader);
-
+    /** Linkeo para generar el ejecutable */
     gl.linkProgram(glProgram);
 
-    if(!gl.getProgramParameter(glProgram,gl.LINK_STATUS)) alert("No se pudo inicializar el shaderProgram");
-
+    if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+        alert("Unable to initialize the shader program.");
+    }
+    
+    /** Uso el programa */
     gl.useProgram(glProgram);
+
 }
 
-function makeShader(src,type){
+function makeShader(src, type){
 
+    /** Compilo shader */
     var shader = gl.createShader(type);
 
-    gl.shaderSource(shader,src);
+    gl.shaderSource(shader, src);
     gl.compileShader(shader);
 
-    if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){
-        alert("Fallo al compilar el shader"+ gl.getShaderInfoLog(shader));
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
     }
 
     return shader;
 }
 
-function initLocations(){
+function initLocalitations(){
 
-    /** Atributos */
-    vertexPositionLocation = gl.getAttribLocation(glProgram,"aVertexPosition");
-    vertexNormalLocation   = gl.getAttribLocation(glProgram,"aVertexNormal");
-    vertexTangenteLocation = gl.getAttribLocation(glProgram,"aVertexTangente");
-    vertexTexturaLocation  = gl.getAttribLocation(glProgram,"aVertexTexCoord");
-   
-    /** Matrices */
-    modelMatrixLocation   = gl.getUniformLocation(glProgram,"uMMatrix");
-    viewMatrixLocation    = gl.getUniformLocation(glProgram,"uVMatrix");
-    projectMatrixLocation = gl.getUniformLocation(glProgram,"uPMatrix");
-    normalMatrixLocation  = gl.getUniformLocation(glProgram,"uNMatrix");
-
-    /** Iluminacion */
-    lighPositionLocation   = gl.getUniformLocation(glProgram,"ulightPos");
-    cameraPositionLocation = gl.getUniformLocation(glProgram,"uCameraPos"); 
-    ambienteColorLocation = gl.getUniformLocation(glProgram,"ambient_color");
-    difusaColorLocation   = gl.getUniformLocation(glProgram,"difusa_color");
-    specularColorLocation = gl.getUniformLocation(glProgram,"specular_color");
-    intensidadLocation = gl.getUniformLocation(glProgram,"intensidad");
-    kaLocation = gl.getUniformLocation(glProgram,"ka");
-    kdLocation = gl.getUniformLocation(glProgram,"kd");
-    ksLocation = gl.getUniformLocation(glProgram,"ks");
-    nLocation  = gl.getUniformLocation(glProgram,"n");
-    colorDefaultLocation = gl.getUniformLocation(glProgram,"color_default");
-
-    /**Animacion */
-    offsetLocation = gl.getUniformLocation(glProgram,"offset"); 
-   
-    /**Condicionales */
-    useNormalVertexLocation = gl.getUniformLocation(glProgram,"useNormalMapVertex");
-    useNormalFragmentLocation = gl.getUniformLocation(glProgram,"useNormalMapFragment");
-    useAnimacionLocation = gl.getUniformLocation(glProgram,"useTextureAnimacion");
-    useDisplacementLocation = gl.getUniformLocation(glProgram,"useDisplacementMap");
-    useTextureLocation = gl.getUniformLocation(glProgram,"useTexture");
-
-    /**Sampler */
-    samplerDisplacementLocation = gl.getUniformLocation(glProgram,"uDisplacementSampler");
-    samplerTexturaLocation = gl.getUniformLocation(glProgram,"uTexturaSampler");
-    samplerTexturaNormalLocation = gl.getUniformLocation(glProgram,"uNormalSampler");
-
+        //Atributos
+    vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
+    vertexTextureAttribute  = gl.getAttribLocation(glProgram, "aVertexTexCoord");
+    vertexNormalAttribute   = gl.getAttribLocation(glProgram, "aVertexNormal");
+    vertexTangenteAttribute = gl.getAttribLocation(glProgram, "aVertexTangente");       
+        //Matrices
+    modelMatrixLocation  = gl.getUniformLocation(glProgram, "uMMatrix");
+    viewMatrixLocation   = gl.getUniformLocation(glProgram, "uVMatrix");
+    projMatrixLocation   = gl.getUniformLocation(glProgram, "uPMatrix");
+    normalMatrixLocation = gl.getUniformLocation(glProgram, "uNMatrix");
+        //Textura
+    sampler1Location = gl.getUniformLocation(glProgram, "uTexturaSampler");
+    sampler2Location = gl.getUniformLocation(glProgram, "uNormalSampler");
+    sampler3Location = gl.getUniformLocation(glProgram, "uDisplacementSampler");
+        //Pòsicion de luces
+    lightPosLocation  = gl.getUniformLocation(glProgram, "ulightPos");
+    light2PosLocation = gl.getUniformLocation(glProgram, "ulightPos2");
+        // Colores de las luces
+    cameraPosLocation     = gl.getUniformLocation(glProgram, "uCameraPos");
+    ambientColorLocation  = gl.getUniformLocation(glProgram, "ambient_color");
+    difusaColorLocation   = gl.getUniformLocation(glProgram, "difusa_color");
+    specularColorLocation = gl.getUniformLocation(glProgram, "specular_color");
+        // Luces caracteristicas
+    intensidadLightLocation  = gl.getUniformLocation(glProgram, "intensidad");
+    intensidadLight2Location = gl.getUniformLocation(glProgram, "intensidad2");
+        // Coheficientes de Phong
+    kaLocation = gl.getUniformLocation(glProgram, "ka");
+    kdLocation = gl.getUniformLocation(glProgram, "kd");
+    ksLocation = gl.getUniformLocation(glProgram, "ks");
+    nLocation  = gl.getUniformLocation(glProgram, "n");
+        //Tiempo
+    offsetLocation       = gl.getUniformLocation(glProgram, "offset");
+    colorDefaultLocation = gl.getUniformLocation(glProgram, "color_default");
+        //Condicionales
+    useTextureLocation         = gl.getUniformLocation(glProgram, "useTexture");
+    texturaAnimacionLocation   = gl.getUniformLocation(glProgram, "useTextureAnimacion");
+    useNormalMapLocation       = gl.getUniformLocation(glProgram, "useNormalMapVertex");
+    useNormalMapFragLocation   = gl.getUniformLocation(glProgram, "useNormalMapFragment");
+    useDisplacementMapLocation = gl.getUniformLocation(glProgram, "useDisplacementMap");
+    
 }
+
+function initObjects(){
+
+    /** Camara */
+    camara = new Camara();
+
+    /** Escena */
+   // fondo  = new Fondo();
+    tierra = new Tierra();
+    sol    = new Sol();
+   // luna   = new Luna();
+
+    //////////////////////////// NO ME GUSTA ACA ESTO MOVERLO! /////////////////////////////////
+
+    /** Configuracion Luz */
+    gl.uniform1f(intensidadLightLocation,100.0);
+    gl.uniform1f(intensidadLight2Location,100.57);
+
+    gl.uniform3f(specularColorLocation,...[1,1,1] );
+    gl.uniform3f(ambientColorLocation,...[1,1,1] );
+    gl.uniform3f(difusaColorLocation,...[1,1,1] );
+
+    
+    gl.uniform3f(light2PosLocation, ...[-50,0,50] );
+    gl.uniform3f(lightPosLocation, ...[50,0,50] );
+
+    /** Configuracion de Proyeccion */
+    mat4.identity(projMatrix);
+    mat4.perspective(projMatrix, 45,1200/800, 0.1, 2000.0);
+    gl.uniformMatrix4fv(projMatrixLocation, false, projMatrix);
+
+    /* Activo atributos*/
+    gl.enableVertexAttribArray(vertexPositionAttribute);
+    gl.enableVertexAttribArray(vertexTangenteAttribute);
+    gl.enableVertexAttribArray(vertexNormalAttribute);
+    gl.enableVertexAttribArray(vertexTextureAttribute);
+  
+}
+
 
 function initTextures(){
 
-    /** Mapa Difuso */
-    tierraTextura = getTexture("tierra-textura");
-
-    /** Mapa Normales */
-    tierraNormalMap = getTexture("tierra-normal"); 
+        // Mapa de Difusas
+    cieloTextura  = getTexture("cielo-textura");  
+    solTextura    = getTexture("sol-textura");    
+    tierraTextura = getTexture("tierra-textura");    
+        // Mapa de Normales          
+    tierraNormalTextura = getTexture("tierra-normal");    
+        //Mapa de Desplazamiento
+    tierraDisplacementTextura = getTexture("tierra-normal");    
 
 }
 
@@ -184,49 +251,35 @@ function getTexture(_url){
     return texturaTemp;
 }
 
-function initObjetos(){
-    
-    /** Camara */
-    camara = new Camara();
-
-    /** Objetos */
-    //var geometria1 = new Esfera(2,2,40,40,[0.2,0.7,0.5]);
-    var geometria2 = new Plano(20,20,40,40,[0.6,0.5,0.1]);
-    //var geometria3 = new Dona(60,60,2*Math.PI,5,20,1,10);
-    
-    geometria2.linesStripDraw(false);
-    geometria2.setTexture(tierraTextura,tierraNormalMap);
-    geometria2.usetextura(true);
-
-    superficie = new Objeto(geometria2);
-
-    /** Configuraciones  */         //Ponerlo apartes
-    superficie.trasladar([0,0,5]);
-    superficie.phong(0.1,3,2,60);
-
-    /** Configuracion Luz */
-    gl.uniform1f(intensidadLocation,10.0);
-    gl.uniform3f(specularColorLocation,...[1,1,1] );
-    gl.uniform3f(ambienteColorLocation,...[1,1,1] );
-    gl.uniform3f(difusaColorLocation,...[1,1,1] );
-    gl.uniform3f(lighPositionLocation, ...[0,0,25]  );
-   
-
-    mat4.identity(projMatrix);
-    mat4.perspective(projMatrix, 45,1200/800, 0.1, 2000.0);
-    gl.uniformMatrix4fv(projectMatrixLocation, false, projMatrix);
-      
-}
 
 function draw(){
 
-    /** Clear screen */
-    gl.clearColor(1.0,1.0,1.0,1.0);
-
-    /** Update */
+    /** Clear */
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      
+    /** Vista */
     camara.event();
     camara.update();
 
-    /** Draw */
-    superficie.dibujar();
+    /** Update */
+
+    if(run){
+
+        sol.update();
+        
+      //  luna.update();
+
+        /** Offset para Animacion de Texturas*/
+        offset +=  0.0001; 
+        if( offset >= 1) offset = 0.0;
+    }
+    
+
+    /** Dibujo */
+
+    sol.dibujar();
+    //luna.dibujar();
+    //fondo.dibujar();
+    tierra.dibujar();
+
 }
