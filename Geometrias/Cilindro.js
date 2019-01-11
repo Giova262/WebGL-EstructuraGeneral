@@ -1,29 +1,20 @@
 /** Clindro clase */
 
-class Cilindro{
+class Cilindro extends Dibujable{
 
-    constructor(radio,alto){
+    constructor(_radio,_alto,_filas,_columnas,_color){
 
-        /** Detalle */
-        this.FILAS = 60;
-        this.COLUMNAS = 60;
-        this.alto = alto;
-        this.radio = radio;
+        super();
         
-
         /** Datos */
-		this.position_buffer = [];
-        this.color_buffer = [];
-        this.index_buffer = [];
-
-        /** Buffers */
-        this.verticeBuffer = null,
-        this.colorBuffer = null;
-        this.indexBuffer = null;
+        this.filas = _filas;
+        this.columnas = _columnas;
+        this.alto = _alto;
+        this.radio = _radio;
+        this.color = _color; 
 
         /** Init */
         this.init();
-
     }
 
     init(){
@@ -31,15 +22,15 @@ class Cilindro{
         var tapa = false ;
         var piso = true ;
 
-        /** Datos de Posiciones y Colores */
-        for(var i = 0.0 ; i< this.COLUMNAS ; i++){
+        /** Atributos */
+        for(var i = 0.0 ; i< this.columnas ; i++){
 
-            var v = i / this.COLUMNAS;
+            var v = i / this.columnas;
             
-            if( i == (this.COLUMNAS-1) ) tapa = true ;
+            if( i == (this.columnas-1) ) tapa = true ;
             if( i != 0.0 ) piso = false ;
 
-            for(var j = 0.0 ; j< this.FILAS ; j++){
+            for(var j = 0.0 ; j< this.filas ; j++){
 
                 if( tapa ){  
 
@@ -54,72 +45,43 @@ class Cilindro{
                     var z = 0;
 
                 }else {
-                    var x = this.radio * Math.cos(j * Math.PI * 2 / (this.COLUMNAS - 1));
-                    var y = this.radio * Math.sin(j * Math.PI * 2 / (this.COLUMNAS - 1));
+                    var x = this.radio * Math.cos(j * Math.PI * 2 / (this.columnas - 1));
+                    var y = this.radio * Math.sin(j * Math.PI * 2 / (this.columnas - 1));
                     var z = v * this.alto  ;
                 }
 
-        		this.position_buffer.push(x);
-        		this.position_buffer.push(y);
-                this.position_buffer.push(z);
+        		this.position_list.push(x);
+        		this.position_list.push(y);
+                this.position_list.push(z);
               
-                this.color_buffer.push(0.8);
-                this.color_buffer.push(0.7);
-                this.color_buffer.push(0.8);
+                this.texture_list.push(1.0 - j / this.filas);
+                this.texture_list.push(1.0 - i / this.columnas);
+
+                this.normal_list.push(x);
+                this.normal_list.push(y);
+                this.normal_list.push(0);
+
+                var tangente = [(y*1), -( (x*1)  ), (x*0)-(y*0) ];
+                this.tangente_list.push( ...tangente );
+  
             }
         }
 
-        /** Datos de Indices */
+        /** Indices */
         var jump = 0 ;
 
-        for(var i = 0.0 ; i< this.COLUMNAS -1 ; i++){
-            for(var j = 0.0 ; j< this.FILAS-1 ; j++){
-                this.index_buffer.push(j + jump );
-                this.index_buffer.push(this.FILAS + j+ jump );
-                this.index_buffer.push(j+1+ jump );
+        for(var i = 0.0 ; i< this.columnas -1 ; i++){
+            for(var j = 0.0 ; j< this.filas-1 ; j++){
+                this.index_list.push(j + jump );
+                this.index_list.push(this.filas + j+ jump );
+                this.index_list.push(j+1+ jump );
 
-                this.index_buffer.push(j+1 + jump );
-                this.index_buffer.push( this.FILAS + j+ jump );
-                this.index_buffer.push( this.FILAS + j + 1+ jump );
+                this.index_list.push(j+1 + jump );
+                this.index_list.push( this.filas + j+ jump );
+                this.index_list.push( this.filas + j + 1+ jump );
             }
-
-            jump = jump + this.FILAS;
+            jump = jump + this.filas;
         }
 
-
-        /** Creo buffer de Vertices */
-        this.verticeBuffer = gl.createBuffer();                               
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.verticeBuffer);                   
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), gl.STATIC_DRAW);   
-        
-        /** Creo buffer de Color */
-        this.colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.color_buffer), gl.STATIC_DRAW);    
-   
-        /** Creo buffer de Indices */
-        this.indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
-   
     }
-
-    dibujar(){
-
-        /** Posiciones */
-        gl.enableVertexAttribArray(vertexPositionAttribute);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.verticeBuffer);
-        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-    
-        /** Colores */
-        gl.enableVertexAttribArray(vertexColorAttribute);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-        gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, false, 0, 0);
-    
-        /** Indices */
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-        gl.drawElements( gl.TRIANGLES, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
- 
-    }
-
 }

@@ -46,11 +46,9 @@ var     canvas = null;
       
     /** Texturas */
 
-        cieloTextura = null;
-        solTextura = null;
-        tierraNormalTextura = null;
-        tierraDisplacementTextura = null;
-
+        ejemplo_textura = null;
+        ejemplo_normal = null;
+    
     /** Matrices */
 
         viewMatrix = mat4.create();
@@ -59,11 +57,8 @@ var     canvas = null;
     /** Objetos */
 
         camara = null;
-        fondo = null;
-        tierra = null;
-        dona = null;
-        sol = null;
-        luna = null;
+        prototipo = null;
+        
 
 /** Inicio de todo  */
 function main(){
@@ -72,6 +67,7 @@ function main(){
     initShaders();
     initLocalitations();   
     initTextures();
+    configuracionInicial();
     initObjects();
     setInterval(draw,10);
 }
@@ -189,66 +185,45 @@ function initObjects(){
     camara = new Camara();
 
     /** Escena */
-    var geometria = new Dona(40,40,2*Math.PI,30,90,60,90,[0,0,1]);
-    dona = new Objeto(geometria);
-
-    dona.setMapaDifuso(tierraTextura);
-    dona.setMapaNormal(tierraNormalTextura);
-    dona.setMapaRelieve(tierraTextura);
-    
-    dona.textura(true);
-    dona.normalMap(true);
-    dona.animacion(false);
-    dona.relieve(false);
-    dona.setDrawType(gl.TRIANGLE_STRIP);
-    dona.phongCoheficientes(0.5,1,1,60);
-
-
-
-   // fondo  = new Fondo();
-    tierra = new Tierra();
-    sol    = new Sol();
-  //  luna   = new Luna();
-
-    //////////////////////////// NO ME GUSTA ACA ESTO MOVERLO! /////////////////////////////////
-
-    /** Configuracion Luz */
-    gl.uniform1f(intensidadLightLocation,30.0);
-    gl.uniform1f(intensidadLight2Location,0);
-
-    gl.uniform3f(specularColorLocation,...[1,1,1] );
-    gl.uniform3f(ambientColorLocation,...[1,1,1] );
-    gl.uniform3f(difusaColorLocation,...[1,1,1] );
-
-    
-    gl.uniform3f(light2PosLocation, ...[-50,0,50] );
-    gl.uniform3f(lightPosLocation, ...[0,0,50] );
-
-    /** Configuracion de Proyeccion */
-    mat4.identity(projMatrix);
-    mat4.perspective(projMatrix, 45,1200/800, 0.1, 2000.0);
-    gl.uniformMatrix4fv(projMatrixLocation, false, projMatrix);
-
-    /* Activo atributos*/
-    gl.enableVertexAttribArray(vertexPositionAttribute);
-    gl.enableVertexAttribArray(vertexTangenteAttribute);
-    gl.enableVertexAttribArray(vertexNormalAttribute);
-    gl.enableVertexAttribArray(vertexTextureAttribute);
+    prototipo = new Prototipo();
+   
   
+}
+
+function configuracionInicial(){
+
+     /** Configuracion Luz */
+     gl.uniform1f(intensidadLightLocation,10.0);
+     gl.uniform1f(intensidadLight2Location,0);
+ 
+     gl.uniform3f(specularColorLocation,...[1,1,1] );
+     gl.uniform3f(ambientColorLocation,...[1,1,1] );
+     gl.uniform3f(difusaColorLocation,...[1,1,1] );
+  
+     gl.uniform3f(light2PosLocation, ...[-50,0,50] );
+     gl.uniform3f(lightPosLocation, ...[0,0,50] );
+ 
+     /** Configuracion de Proyeccion */
+     mat4.identity(projMatrix);
+     mat4.perspective(projMatrix, 45,1200/800, 0.1, 2000.0);
+     gl.uniformMatrix4fv(projMatrixLocation, false, projMatrix);
+ 
+     /* Activo atributos*/
+     gl.enableVertexAttribArray(vertexPositionAttribute);
+     gl.enableVertexAttribArray(vertexTangenteAttribute);
+     gl.enableVertexAttribArray(vertexNormalAttribute);
+     gl.enableVertexAttribArray(vertexTextureAttribute);
 }
 
 
 function initTextures(){
 
-        // Mapa de Difusas
-    cieloTextura  = getTexture("cielo-textura");  
-    solTextura    = getTexture("sol-textura");    
-    tierraTextura = getTexture("tierra-textura");    
-        // Mapa de Normales          
-    tierraNormalTextura = getTexture("tierra-normal");    
-        //Mapa de Desplazamiento
-    tierraDisplacementTextura = getTexture("tierra-normal");    
-
+    /** Mapas de Texturas */
+    ejemplo_textura  = getTexture("ejemplo-textura");
+        
+    /** Mapas de Normales */         
+    ejemplo_normal = getTexture("ejemplo-normal");    
+     
 }
 
 function getTexture(_url){
@@ -289,5 +264,5 @@ function draw(){
     
 
     /** Dibujo */
-  
+    prototipo.dibujar();
 }
