@@ -118,6 +118,10 @@ class Objeto{
         gl.uniform1i(sampler3Location,2);
     }
 
+    setDrawType(_type){
+        this.geometria.setDrawType(_type);
+    }
+
 
     dibujar(){
 	

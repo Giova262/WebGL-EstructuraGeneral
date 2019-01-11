@@ -3,6 +3,8 @@ class Dibujable{
 
     constructor(){
 
+         this.drawTipo = gl.TRIANGLES;
+
          /** Vectores */
          this.position_list = [];
          this.texture_list = [];
@@ -17,6 +19,10 @@ class Dibujable{
 		 this.texture_buffer = gl.createBuffer();
          this.index_buffer = gl.createBuffer();
   
+    }
+
+    setDrawType(_type){
+        this.drawTipo = _type;
     }
 
     dibujar(){
@@ -47,7 +53,7 @@ class Dibujable{
         /** Indices */
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_list), gl.STATIC_DRAW);
-        gl.drawElements( gl.TRIANGLES, this.index_list.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements( this.drawTipo , this.index_list.length, gl.UNSIGNED_SHORT, 0);
 
     }
 }

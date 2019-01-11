@@ -12,17 +12,22 @@ class Tierra{
 
     init(){
 
+        /** Texturas */
         this.tierra.setMapaDifuso(tierraTextura);
         this.tierra.setMapaNormal(tierraNormalTextura);
         this.tierra.setMapaRelieve(tierraTextura);
         
+        /** Dibujado */
         this.tierra.textura(true);
         this.tierra.normalMap(true);
         this.tierra.animacion(false);
         this.tierra.relieve(true);
+        this.tierra.setDrawType(gl.TRIANGLES);
 
+        /** Posicionamientos */
         this.tierra.rotar(-Math.PI/2.0-0.5,[0,0,1]);
 
+        /**Iluminacion */
         this.tierra.phongCoheficientes(0.1,0.7,1,60);
     }
 
