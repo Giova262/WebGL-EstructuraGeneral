@@ -1,8 +1,9 @@
 
-class Dona extends SRCBezier{
-    constructor(_puntosCurva,_puntosRevolucion,_angulo,_radioInt,_radioExt,_alturaMin,_alturaMax){
+class Dona extends SuperficieDeRevolucion{
+    constructor(_puntosCurva,_puntosRevolucion,_angulo,_radioInt,_radioExt,_alturaMin,_alturaMax,_color){
 
-        super(_puntosCurva,_puntosRevolucion,_angulo);
+        console.log(_alturaMax);
+        super(_puntosCurva,_puntosRevolucion,_angulo,_color);
 
         this.radioInterior = _radioInt;
         this.radioExterior = _radioExt;
@@ -41,10 +42,6 @@ class Dona extends SRCBezier{
 
         /** Cantidad de tramos de curva */ 
         this.tramos = this.puntosControl.length / 4.0 ;
-    }
-
-    linesStripDraw(_condicion){
-        this.useLines = _condicion;
     }
 
 }

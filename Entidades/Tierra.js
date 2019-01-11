@@ -21,7 +21,7 @@ class Tierra{
         this.tierra.textura(true);
         this.tierra.normalMap(true);
         this.tierra.animacion(false);
-        this.tierra.relieve(true);
+        this.tierra.relieve(false);
         this.tierra.setDrawType(gl.TRIANGLES);
 
         /** Posicionamientos */

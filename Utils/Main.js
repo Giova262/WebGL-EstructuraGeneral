@@ -61,6 +61,7 @@ var     canvas = null;
         camara = null;
         fondo = null;
         tierra = null;
+        dona = null;
         sol = null;
         luna = null;
 
@@ -188,16 +189,32 @@ function initObjects(){
     camara = new Camara();
 
     /** Escena */
+    var geometria = new Dona(40,40,2*Math.PI,30,90,60,90,[0,0,1]);
+    dona = new Objeto(geometria);
+
+    dona.setMapaDifuso(tierraTextura);
+    dona.setMapaNormal(tierraNormalTextura);
+    dona.setMapaRelieve(tierraTextura);
+    
+    dona.textura(true);
+    dona.normalMap(true);
+    dona.animacion(false);
+    dona.relieve(false);
+    dona.setDrawType(gl.TRIANGLE_STRIP);
+    dona.phongCoheficientes(0.5,1,1,60);
+
+
+
    // fondo  = new Fondo();
     tierra = new Tierra();
     sol    = new Sol();
-   // luna   = new Luna();
+  //  luna   = new Luna();
 
     //////////////////////////// NO ME GUSTA ACA ESTO MOVERLO! /////////////////////////////////
 
     /** Configuracion Luz */
-    gl.uniform1f(intensidadLightLocation,100.0);
-    gl.uniform1f(intensidadLight2Location,100.57);
+    gl.uniform1f(intensidadLightLocation,30.0);
+    gl.uniform1f(intensidadLight2Location,0);
 
     gl.uniform3f(specularColorLocation,...[1,1,1] );
     gl.uniform3f(ambientColorLocation,...[1,1,1] );
@@ -205,7 +222,7 @@ function initObjects(){
 
     
     gl.uniform3f(light2PosLocation, ...[-50,0,50] );
-    gl.uniform3f(lightPosLocation, ...[50,0,50] );
+    gl.uniform3f(lightPosLocation, ...[0,0,50] );
 
     /** Configuracion de Proyeccion */
     mat4.identity(projMatrix);
@@ -262,24 +279,15 @@ function draw(){
     camara.update();
 
     /** Update */
-
     if(run){
-
-        sol.update();
-        
-      //  luna.update();
-
-        /** Offset para Animacion de Texturas*/
-        offset +=  0.0001; 
-        if( offset >= 1) offset = 0.0;
+        tiempo += 200;     
     }
+
+    /** Offset */
+    offset +=  0.0001; 
+    if( offset >= 1) offset = 0.0;
     
 
     /** Dibujo */
-
-    sol.dibujar();
-    //luna.dibujar();
-    //fondo.dibujar();
-    tierra.dibujar();
-
+  
 }

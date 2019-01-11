@@ -4,10 +4,10 @@ class Sol{
 
     constructor(){
 
-        var esferaGeometria = new Esfera(10,Math.PI,[1,0,0],60,60);
+        var esferaGeometria = new Esfera(2,Math.PI,[1,1,0],60,60);
         this.sol = new Objeto(esferaGeometria);
 
-        this.radio = 60;
+        this.radio = 80;
         this.position = [0,0,0];
         this.altura = 50;
 
@@ -21,7 +21,7 @@ class Sol{
         this.sol.setMapaNormal(tierraNormalTextura);
         this.sol.setMapaRelieve(tierraTextura);
         
-        this.sol.textura(true);
+        this.sol.textura(false);
         this.sol.normalMap(false);
         this.sol.animacion(false);
         this.sol.relieve(false);
@@ -48,8 +48,8 @@ class Sol{
         var y = this.radio * Math.sin(theta )  ;
         var z = this.altura ;
 
-        this.position[0] = 0;
-        this.position[1] = 0;
+        this.position[0] = x;
+        this.position[1] = y;
         this.position[2] = z;
 
         this.sol.trasladar([x,y,z]);
