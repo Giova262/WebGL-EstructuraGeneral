@@ -73,11 +73,11 @@ class Camara{
         /** Eventos disparados por el teclado */
         window.addEventListener("keydown", function (e) {
             if ( e.keyCode == 90) {
-                escala = escala - 0.00002; 
+                escala = escala - 0.01; 
                 if( escala <= 0.01 ) escala = 0.01 ;
             }
             if ( e.keyCode == 88) {
-                escala = escala + 0.00002; 
+                escala = escala + 0.01; 
                 if( escala >= 1.0 ) escala = 1.0 ; 
             }
             if ( e.keyCode == 49) {
@@ -117,6 +117,9 @@ class Camara{
             
         }, true);
           
+    }
+
+    update(){
 
         if(isMouseDown) {
 
@@ -137,9 +140,6 @@ class Camara{
             beta = beta - deltaY * factorVelocidad;
             
         } 
-    }
-
-    update(){
 
         if(tipoCamara == 0) this.orbital();
         if(tipoCamara == 1) this.primeraPersona();

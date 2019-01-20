@@ -76,6 +76,7 @@ function initObjects(){
 
     /** Camara */
     camara = new Camara();
+    camara.event();
 
     /** Escena */
     prototipo = new Prototipo();
@@ -88,7 +89,6 @@ function draw(){
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       
     /** Vista */
-    camara.event();
     camara.update();
 
     /** Update */
