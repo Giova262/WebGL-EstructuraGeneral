@@ -2,7 +2,7 @@
 
 var previousClientX = 0,
     previousClientY = 0,
-    radio = 620,
+    radio = 250,
     radio2 = 0;
     escala= 1.0;
     alfa = Math.PI, 
@@ -28,13 +28,17 @@ var previousClientX = 0,
     y2= 0;
     parar = false;
 
+    pasoEscala = 0.01;
+    contador = 0;
+
 
 class Camara{
 
-    constructor(){}
+    constructor(){
+        
+    }
 
     event(){
-
         /** Guardo posicion del mouse dentro del canvas */
         $("#canvas").mousemove(function(e){     
             mouseX = e.clientX || e.pageX; 
@@ -43,8 +47,7 @@ class Camara{
 
         /** Evaluo si presione el boton del mouse dentro del canvas */
         $("#canvas").mousedown(function(e){
-            isMouseDown = true;
-            
+            isMouseDown = true;       
         });
 
         /** Pongo false si suelto el boton del mouse */
@@ -58,11 +61,11 @@ class Camara{
               
             // Chrome
             if(e.originalEvent.wheelDelta > 0) {
-                escala = escala - 0.00002; 
+                escala = escala - pasoEscala; 
                 if( escala <= 0.01 ) escala = 0.01 ;
                 
             }else  if( e.originalEvent.wheelDelta < 0 ){ 
-                escala = escala + 0.00002; 
+                escala = escala + pasoEscala; 
                 if( escala >= 1.0 ) escala = 1.0 ;          
             }
 
@@ -73,11 +76,11 @@ class Camara{
         /** Eventos disparados por el teclado */
         window.addEventListener("keydown", function (e) {
             if ( e.keyCode == 90) {
-                escala = escala - 0.01; 
+                escala = escala - pasoEscala; 
                 if( escala <= 0.01 ) escala = 0.01 ;
             }
             if ( e.keyCode == 88) {
-                escala = escala + 0.01; 
+                escala = escala + pasoEscala; 
                 if( escala >= 1.0 ) escala = 1.0 ; 
             }
             if ( e.keyCode == 49) {
@@ -135,12 +138,13 @@ class Camara{
             previousClientX = mouseX;
             previousClientY = mouseY;
     
-            /** Calculo de alfa y beta */
+         
             alfa = alfa - deltaX * factorVelocidad;
             beta = beta - deltaY * factorVelocidad;
             
         } 
 
+        //console.log(escala);
         if(tipoCamara == 0) this.orbital();
         if(tipoCamara == 1) this.primeraPersona();
          
@@ -151,9 +155,9 @@ class Camara{
         if (alfa<0) alfa=Math.PI*2;
         if (alfa>Math.PI*2) alfa=0;
 
-      //  if (beta<  -Math.PI/2 +0.04) beta = -Math.PI/2 + 0.04;
+        if (beta<  -Math.PI/2 +0.08) beta = -Math.PI/2 + 0.08;
         if( beta >= 0.0 ) beta =  -beta ;
-
+       
         /** Camara update */   
         var x = radio * escala * Math.cos(alfa) * Math.sin(beta);
         var y = radio * escala * Math.sin(alfa) * Math.sin(beta);
