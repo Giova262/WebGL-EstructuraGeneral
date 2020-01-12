@@ -1,0 +1,2 @@
+Desde esta pagina https://cpetry.github.io/NormalMap-Online/  cargas la imagen y te genera un mapa de normales que podes usarla
+como mapa de relieve tambien
