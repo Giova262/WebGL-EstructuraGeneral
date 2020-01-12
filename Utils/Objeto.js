@@ -115,23 +115,17 @@ class Objeto{
 
     setMapaDifuso( _mapa){
         this.mapaDifuso = _mapa;
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, this.mapaDifuso);
-        gl.uniform1i(sampler1Location, 0);
+        
     }
 
     setMapaNormal(_mapa){
         this.mapaNormal = _mapa;
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, this.mapaNormal);
-        gl.uniform1i(sampler2Location, 1);
+        
     }
 
     setMapaRelieve(_mapa){
         this.mapaRelieve = _mapa;
-        gl.activeTexture(gl.TEXTURE2);
-        gl.bindTexture(gl.TEXTURE_2D, this.mapaRelieve);
-        gl.uniform1i(sampler3Location,2);
+       
     }
 
     setDrawType(_type){
@@ -140,6 +134,19 @@ class Objeto{
 
 
     dibujar(){
+		
+		/** Mapas*/
+		gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.mapaDifuso);
+        gl.uniform1i(sampler1Location, 0);
+		
+		gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, this.mapaNormal);
+        gl.uniform1i(sampler2Location, 1);
+		
+		 gl.activeTexture(gl.TEXTURE2);
+        gl.bindTexture(gl.TEXTURE_2D, this.mapaRelieve);
+        gl.uniform1i(sampler3Location,2);
 	
         /** Condicionales */
         gl.uniform1i(useTextureLocation, this.useTextura);
