@@ -10,6 +10,10 @@ class Objeto{
 
         /** Caracteristicas */
         this.angulo = 0;
+		this.anguloX = 0;
+        this.anguloY = 0;
+        this.anguloZ = 0;
+		
         this.eje = [0,0,1];
         this.posicion = [0,0,0];
         this.escala = [1,1,1];
@@ -57,6 +61,18 @@ class Objeto{
     rotar(_angulo,_eje){
         this.angulo =  _angulo ;
         this.eje = _eje;
+    }
+	
+	rotarX(_angulo){
+        this.anguloX =  _angulo ;
+    }
+
+    rotarY(_angulo){
+        this.anguloY =  _angulo ;
+    }
+
+    rotarZ(_angulo){
+        this.anguloZ =  _angulo ;
     }
 
     trasladar(_posicion){
@@ -143,7 +159,10 @@ class Objeto{
         mat4.identity(this.modelMatrix);
         mat4.multiply(this.modelMatrix,this.modelMatrix, this.padreMatrix );
         mat4.scale(this.modelMatrix,this.modelMatrix, this.escala);
-        mat4.rotate(this.modelMatrix,this.modelMatrix, this.angulo, this.eje);
+        //mat4.rotate(this.modelMatrix,this.modelMatrix, this.angulo, this.eje);
+		mat4.rotate(this.modelMatrix,this.modelMatrix, this.anguloX, [1,0,0]);
+        mat4.rotate(this.modelMatrix,this.modelMatrix, this.anguloY, [0,1,0]);
+        mat4.rotate(this.modelMatrix,this.modelMatrix, this.anguloZ, [0,0,1]);
         mat4.translate(this.modelMatrix, this.modelMatrix, this.posicion);
         gl.uniformMatrix4fv(modelMatrixLocation, false, this.modelMatrix);
       
