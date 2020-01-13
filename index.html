@@ -48,6 +48,7 @@
 
             uniform vec3 uCameraPos;
             uniform  float offset;
+            uniform  float offsetRelieve;
             
             uniform bool useNormalMapVertex;
             uniform bool useTextureAnimacion;
@@ -123,7 +124,9 @@
                     if(useDisplacementMap){      
                         vec3 relieve =  normalize( texture2D(uDisplacementSampler,vTextureCoord).rgb ) ; 
                        // P.z += relieve.r * 15.0;
-                       P.xyz += relieve.r * 15.0 * uNMatrix * aVertexNormal;
+                        if(relieve.r >= 0.05 ){ 
+                            P.xyz += relieve.r * offsetRelieve * uNMatrix * aVertexNormal;
+                       }
                     }
                 }        
                

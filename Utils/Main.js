@@ -38,6 +38,7 @@ var     canvas = null;
         ksLocation  = null;
         nLocation  = null;
         offsetLocation = null;
+        offsetRelieveLocation = null;
         colorDefaultLocation = null;
         texturaAnimacionLocation = null;
         useNormalMapLocation = null;
@@ -203,6 +204,9 @@ function initLocalitations(){
     kdLocation = gl.getUniformLocation(glProgram, "kd");
     ksLocation = gl.getUniformLocation(glProgram, "ks");
     nLocation  = gl.getUniformLocation(glProgram, "n");
+	
+	/** Relieve Offset */
+    offsetRelieveLocation = gl.getUniformLocation(glProgram, "offsetRelieve");
     
     /** Animacion */
     offsetLocation = gl.getUniformLocation(glProgram, "offset");

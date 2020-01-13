@@ -17,6 +17,8 @@ class Objeto{
         this.eje = [0,0,1];
         this.posicion = [0,0,0];
         this.escala = [1,1,1];
+		
+		this.relieve_valor = 7.0;
 
         /** Modelo de Phong */
         this.ka = 1;
@@ -39,6 +41,10 @@ class Objeto{
         this.mapaDifuso = null;
         this.mapaNormal = null;
         this.mapaRelieve = null;
+    }
+	
+	coheficienteRelieve(_valor){
+        this.relieve_valor = _valor;
     }
 
     addMatriz(_matrix){
@@ -155,6 +161,7 @@ class Objeto{
         gl.uniform1i(useDisplacementMapLocation, this.useRelieveMap);
         gl.uniform1i(texturaAnimacionLocation, this.useAnimacion);
         gl.uniform1f(offsetLocation,offset);
+        gl.uniform1f(offsetRelieveLocation,this.relieve_valor);
 
         /** Iluminacion */   
 		gl.uniform1f(kaLocation, this.ka);
