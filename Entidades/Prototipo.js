@@ -20,7 +20,7 @@ class Prototipo{
 
         /** Estilo */
         this.plano.textura(true);
-        this.plano.normalMap(false);
+        this.plano.normalMap(true);
         this.plano.relieve(false);
         this.plano.animacion(false);
 
