@@ -172,12 +172,15 @@ class Objeto{
         /** Matriz de modelado */
         mat4.identity(this.modelMatrix);
         mat4.multiply(this.modelMatrix,this.modelMatrix, this.padreMatrix );
-        mat4.scale(this.modelMatrix,this.modelMatrix, this.escala);
+        
         //mat4.rotate(this.modelMatrix,this.modelMatrix, this.angulo, this.eje);
 		mat4.rotate(this.modelMatrix,this.modelMatrix, this.anguloX, [1,0,0]);
         mat4.rotate(this.modelMatrix,this.modelMatrix, this.anguloY, [0,1,0]);
         mat4.rotate(this.modelMatrix,this.modelMatrix, this.anguloZ, [0,0,1]);
         mat4.translate(this.modelMatrix, this.modelMatrix, this.posicion);
+        mat4.scale(this.modelMatrix,this.modelMatrix, this.escala);
+       
+
         gl.uniformMatrix4fv(modelMatrixLocation, false, this.modelMatrix);
       
         /** Matriz de normales */
