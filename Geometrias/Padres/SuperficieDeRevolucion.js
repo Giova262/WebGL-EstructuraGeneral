@@ -7,7 +7,7 @@ class SuperficieDeRevolucion extends Dibujable{
     
         /** Detalles */
         this.color = _color;
-        this.puntosCurva = _puntosCurva;
+        this.puntosCurva = _puntosCurva; // es el paso en la curva osea el u
         this.puntosRevolucion = _puntosRevolucion;
         this.puntosControl = [];
         this.curva = [];
@@ -63,11 +63,13 @@ class SuperficieDeRevolucion extends Dibujable{
                  
             for(var i=0; i< (this.puntosCurva / this.tramos); i++){      
 
-                var u = (i )/ ( (this.puntosCurva/ this.tramos) -1);
-                this.curva.push( ... this.getPuntoBezier(u,punto1,punto2,punto3,punto4) );    
+                var u = (i )/ ( (this.puntosCurva/ this.tramos) -1); // Paso en la curva u
+                this.curva.push( ... this.getPuntoBezier(u,punto1,punto2,punto3,punto4) );    // con ese u pido la posicion en el espacio segundo bezier
                 this.curvaTangentes.push(... this.getTangenteBezier(u,punto1,punto2,punto3,punto4));
             } 	
         }   
+
+        //Despues de crear la curva osea el perfil ahora aplico la revolucion
 
         /** Atributos */
         for(var i=0 ; i < this.curva.length ; i = i +3){
@@ -105,7 +107,7 @@ class SuperficieDeRevolucion extends Dibujable{
             for(var j = 0 ; j< this.puntosRevolucion-1 ; j++){
 
                 this.index_list.push(j + jump );
-                this.index_list.push(this.puntosRevolucion + j + jump );    
+                this.index_list.push(this.puntosRevolucion + j + jump );      
             }
 
             jump = jump + this.puntosRevolucion;        

@@ -2,7 +2,7 @@ class Prototipo{
 
     constructor(){
 
-        var geo = new Cilindro(10,50,20,20,[0.6,0.6,0.8]);
+        var geo = new Cilindro(50,50,2*Math.PI,1,2,10,[0.3,0.6,0.4]);
         this.plano = new Objeto(geo);
 
         this.configuracion();
@@ -16,7 +16,7 @@ class Prototipo{
         this.plano.setMapaRelieve(ejemplo_normal);
 
         /** Estilo */
-        this.plano.textura(false);
+        this.plano.textura(true);
         this.plano.normalMap(false);
         this.plano.relieve(false);
         this.plano.animacion(false);
@@ -25,12 +25,12 @@ class Prototipo{
         this.plano.phongCoheficientes(1,1.2,1,10);
 
         /** Movimientos iniciales */
-        this.plano.escalar([1,2,1]);
-        this.plano.rotarY(Math.PI);
-        this.plano.trasladar([50,0,80]);
+        this.plano.escalar([10,10,5]);
+        this.plano.rotarY(0);
+        this.plano.trasladar([0,0,-20]);
 
         /** Formato de vetices */
-        this.plano.setDrawType(gl.TRIANGLES);
+        this.plano.setDrawType(gl.TRIANGLE_STRIP); // POINTS  LINES LINE_STRIP LINE_LOOP TRIANGLES TRIANGLE_STRIP TRIANGLE_FAN
     }
 
     update(){

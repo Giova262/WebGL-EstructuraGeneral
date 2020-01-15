@@ -41,7 +41,7 @@ class Dona extends SuperficieDeRevolucion{
         this.puntosControl.push(p7);
 
         /** Cantidad de tramos de curva */ 
-        this.tramos = this.puntosControl.length / 4.0 ;
+        this.tramos = this.puntosControl.length / 4.0 ; // cada tramo es una subcurva
     }
 
 }
