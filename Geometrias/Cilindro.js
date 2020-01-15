@@ -31,44 +31,44 @@ class Cilindro extends SuperficieDeRevolucion{
         var p7 = [this.radioExterior,0,1];*/
 
         var p4 = [this.radioExterior,0,this.altura];
-        var p5 = [this.radioExterior,0,this.altura*30/31];
-        var p6 = [this.radioExterior,0,this.altura*29/31];
-        var p7 = [this.radioExterior,0,this.altura*28/31];
+        var p5 = [this.radioExterior,0,this.altura*23/24];
+        var p6 = [this.radioExterior,0,this.altura*22/24];
+        var p7 = [this.radioExterior,0,this.altura*21/24];
 
-        var p7_2 =  [this.radioExterior,0,this.altura*27/31];
-        var p7_3 =  [this.radioExterior,0,this.altura*26/31];
-        var p7_4 =  [this.radioExterior,0,this.altura*25/31];
-        var p7_5 =  [this.radioExterior,0,this.altura*24/31];
+        var p7_2 =  [this.radioExterior,0,this.altura*21/24];
+        var p7_3 =  [this.radioExterior,0,this.altura*20/24];
+        var p7_4 =  [this.radioExterior,0,this.altura*19/24];
+        var p7_5 =  [this.radioExterior,0,this.altura*18/24];
 
-        var p7_6 =  [this.radioExterior,0,this.altura*23/31];
-        var p7_7 =  [this.radioExterior,0,this.altura*22/31];
-        var p7_8 =  [this.radioExterior,0,this.altura*21/31];
-        var p7_9 =  [this.radioExterior,0,this.altura*20/31];
+        var p7_6 =  [this.radioExterior,0,this.altura*18/24];
+        var p7_7 =  [this.radioExterior,0,this.altura*17/24];
+        var p7_8 =  [this.radioExterior,0,this.altura*16/24];
+        var p7_9 =  [this.radioExterior,0,this.altura*15/24];
 
-        var p7_10 = [this.radioExterior,0,this.altura*19/31];
-        var p7_11 = [this.radioExterior,0,this.altura*18/31];
-        var p7_12 = [this.radioExterior,0,this.altura*17/31];
-        var p7_13 = [this.radioExterior,0,this.altura*16/31];
+        var p7_10 = [this.radioExterior,0,this.altura*15/24];
+        var p7_11 = [this.radioExterior,0,this.altura*14/24];
+        var p7_12 = [this.radioExterior,0,this.altura*13/24];
+        var p7_13 = [this.radioExterior,0,this.altura*12/24];
 
-        var p7_14 = [this.radioExterior,0,this.altura*15/31];
-        var p7_15 = [this.radioExterior,0,this.altura*14/31];
-        var p7_16 = [this.radioExterior,0,this.altura*13/31];
-        var p7_17 = [this.radioExterior,0,this.altura*12/31];
+        var p7_14 = [this.radioExterior,0,this.altura*12/24];
+        var p7_15 = [this.radioExterior,0,this.altura*11/24];
+        var p7_16 = [this.radioExterior,0,this.altura*10/24];
+        var p7_17 = [this.radioExterior,0,this.altura*9/24];
 
-        var p7_18 = [this.radioExterior,0,this.altura*11/31];
-        var p7_19 = [this.radioExterior,0,this.altura*10/31];
-        var p7_20 = [this.radioExterior,0,this.altura*9/31];
-        var p7_21 = [this.radioExterior,0,this.altura*8/31];
+        var p7_18 = [this.radioExterior,0,this.altura*9/24];
+        var p7_19 = [this.radioExterior,0,this.altura*8/24];
+        var p7_20 = [this.radioExterior,0,this.altura*7/24];
+        var p7_21 = [this.radioExterior,0,this.altura*6/24];
 
-        var p7_22 = [this.radioExterior,0,this.altura*7/31];
-        var p7_23 = [this.radioExterior,0,this.altura*6/31];
-        var p7_24 = [this.radioExterior,0,this.altura*5/31];
-        var p7_25 = [this.radioExterior,0,this.altura*4/31];
+        var p7_22 = [this.radioExterior,0,this.altura*6/24];
+        var p7_23 = [this.radioExterior,0,this.altura*5/24];
+        var p7_24 = [this.radioExterior,0,this.altura*4/24];
+        var p7_25 = [this.radioExterior,0,this.altura*3/24];
 
-        var p7_26 = [this.radioExterior,0,this.altura*3/31];
-        var p7_27 = [this.radioExterior,0,this.altura*2/31];
-        var p7_28 = [this.radioExterior,0,this.altura*1/31];
-        var p7_29 = [this.radioExterior,0,1];
+        var p7_26 = [this.radioExterior,0,this.altura*3/24];
+        var p7_27 = [this.radioExterior,0,this.altura*2/24];
+        var p7_28 = [this.radioExterior,0,this.altura*1/24];
+        var p7_29 = [this.radioExterior,0,0.1];
 
         var p8 = [this.radioExterior,0,0];
         var p9 = [this.radioExterior-offset,0,0];

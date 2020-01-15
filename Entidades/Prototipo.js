@@ -2,7 +2,7 @@ class Prototipo{
 
     constructor(){
 
-        var geo = new Cilindro(200,100,2*Math.PI,5,15,60,[0.3,0.6,0.4]);
+        var geo = new Cilindro(100,100,2*Math.PI,0,15,60,[0.3,0.6,0.4]);
         this.plano = new Objeto(geo);
 
         this.configuracion();
@@ -17,8 +17,8 @@ class Prototipo{
 
         /** Estilo */
         this.plano.textura(true);
-        this.plano.normalMap(false);
-        this.plano.relieve(true);
+        this.plano.normalMap(true);
+        this.plano.relieve(false);
         this.plano.animacion(false);
         this.plano.coheficienteRelieve(15.0);
 
