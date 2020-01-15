@@ -30,7 +30,11 @@ class Rectangulo extends Dibujable{
             -1.0*this.ancho,-1.0*this.profundidad,1.0*this.alto,
             -1.0*this.ancho,-1.0*this.profundidad,-1.0*this.alto,
             -1.0*this.ancho,1.0*this.profundidad,-1.0*this.alto,
-           
+            //right
+            1.0*this.ancho,1.0*this.profundidad,1.0*this.alto,
+            1.0*this.ancho,-1.0*this.profundidad,1.0*this.alto,
+            1.0*this.ancho,-1.0*this.profundidad,-1.0*this.alto,
+            1.0*this.ancho,1.0*this.profundidad,-1.0*this.alto,
             //front
             1.0*this.ancho,1.0*this.profundidad,1.0*this.alto,
             1.0*this.ancho,-1.0*this.profundidad,1.0*this.alto,
@@ -62,7 +66,11 @@ class Rectangulo extends Dibujable{
             -1.0,0.0,0.0,
             -1.0,0.0,0.0,
                 
-          
+            // right
+            1.0,0.0,0.0,
+            1.0,0.0,0.0,
+            1.0,0.0,0.0,
+            1.0,0.0,0.0,
                             
             // front
             0.0,0.0,1.0,
@@ -96,7 +104,11 @@ class Rectangulo extends Dibujable{
                 0,0,-1,
                 0,0,-1,
                     
-               
+                // right
+                0,0,1,
+                0,0,1,
+                0,0,1,
+                0,0,1,
                                 
                 // front
                 1,0,0,
@@ -130,7 +142,11 @@ class Rectangulo extends Dibujable{
                         1,1,
                         0,1,
                         
-                    
+                    // 
+                        1,1,
+                        0,1,
+                        0,0,
+                        1,0,
                                     
                     // 
                         1,1,
@@ -159,7 +175,9 @@ class Rectangulo extends Dibujable{
                         //left
                         5,4,6,
                         6,4,7,
-                        
+                        //right
+                        8,9,10,
+                        8,10,11,
                         //front
                         13,12,14,
                         15,14,12,
