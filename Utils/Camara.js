@@ -2,11 +2,13 @@
 
 var previousClientX = 0,
     previousClientY = 0,
-    radio = 250,
+    radio = 400,
     radio2 = 0;
     escala= 1.0;
-    alfa = Math.PI, 
-    beta = Math.PI/4.0, 
+    /*alfa = Math.PI, 
+    beta = Math.PI/4.0, */
+    alfa = Math.PI/2, 
+    beta = Math.PI/2, 
     factorVelocidad = 0.01;
     ZOOM = 0.007;
 

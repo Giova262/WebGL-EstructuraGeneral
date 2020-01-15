@@ -8,8 +8,8 @@ class Sol{
         this.sol = new Objeto(esferaGeometria);
 
         this.radio = 50;
-        this.position = [0,0,1];
-        this.altura = 50;
+        this.position = [0,0,0];
+        this.altura = 60;
 
         this.init();
     }

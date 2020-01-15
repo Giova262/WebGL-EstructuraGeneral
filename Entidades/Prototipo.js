@@ -5,8 +5,8 @@ class Prototipo{
       /*  var geo_plano = new Plano(200,200,[1,0.2,0.6]);
         this.plano = new Objeto(geo_plano);*/
 
-        var geo_rectangulo = new Rectangulo(10,10,10,[0.5,0.5,0.5]);
-        this.plano = new Objeto(geo_rectangulo);
+        var geo = new Triangulo(50,50,50,[0.5,0.5,0.5]);
+        this.plano = new Objeto(geo);
 
         this.configuracion();
     }
@@ -19,13 +19,13 @@ class Prototipo{
         this.plano.setMapaRelieve(ejemplo_normal);
 
         /** Estilo */
-        this.plano.textura(true);
-        this.plano.normalMap(true);
+        this.plano.textura(false);
+        this.plano.normalMap(false);
         this.plano.relieve(false);
         this.plano.animacion(false);
 
         /** Iluminacion */
-        this.plano.phongCoheficientes(0.2,1,0.2,60);
+        this.plano.phongCoheficientes(0.5,0.9,1,10);
 
         /** Movimientos iniciales */
         this.plano.escalar([1,1,1]);

@@ -126,7 +126,7 @@ function initWebGL(){
     if(!gl) alert(" No se puedo iniciar WebGL , Lo siento ");
     
     /** Color con el que se limpia la pantalla */
-    gl.clearColor(0.0,0.7,1.0,1.0);
+    gl.clearColor(1.0,1.0,1.0,1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     gl.viewport(0,0, canvas.width , canvas.height);
