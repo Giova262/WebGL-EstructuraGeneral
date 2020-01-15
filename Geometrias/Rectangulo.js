@@ -22,9 +22,42 @@ class Rectangulo extends Dibujable{
 
         var x = this.ancho / 2;
 		var y = this.alto / 2;
-		var z = this.profundidad;
+        var z = this.profundidad;
+        
+        this.position_list = [
+            //top
+            -1.0,1.0,-1.0,
+            -1.0,1.0,1.0,
+            1.0,1.0,1.0,
+            1.0,1.0,-1.0,
+            //left
+            -1.0,1.0,1.0,
+            -1.0,-1.0,1.0,
+            -1.0,-1.0,-1.0,
+            -1.0,1.0,-1.0,
+            //right
+            1.0,1.0,1.0,
+            1.0,-1.0,1.0,
+            1.0,-1.0,-1.0,
+            1.0,1.0,-1.0,
+            //front
+            1.0,1.0,1.0,
+            1.0,-1.0,1.0,
+            -1.0,-1.0,1.0,
+            -1.0,1.0,1.0,
+            //back
+            1.0,1.0,-1.0,
+            1.0,-1.0,-1.0,
+            -1.0,-1.0,-1.0,
+            -1.0,1.0,-1.0,
+            //bottom
+            -1.0,-1.0,-1.0,
+            -1.0,-1.0,1.0,
+            1.0,-1.0,1.0,
+            1.0,-1.0,-1.0,
+        ]
 	
-		this.position_list = [
+		/*this.position_list = [
 		// Cara Frontal.
 			-x, y,  0,
 			 x, y,  0,
@@ -60,7 +93,7 @@ class Rectangulo extends Dibujable{
 			-x, y,  0,
 			-x, y,  z,
 			-x, -y, z,
-        ];
+        ];*/
         
         this.normal_list = [
             // Cara Frontal.
@@ -140,46 +173,68 @@ class Rectangulo extends Dibujable{
 
                 this.texture_list = [
                     // Cara Frontal.
-                        0,1/3,
-                        0,2/3,
-                        1/4,1/3,
-                        1/4,2/3,
+                        0,0,
+                        0,1,
+                        1,1,
+                        1,0,
                                     
                     // Cara Superior.
-                        1/4,1,
-                        1/4,2/3,
-                        1/2,1,
-                        1/2,2/3,
+                    0,0,
+                    1,0,
+                    1,1,
+                    0,1,
                         
                     // Cara Posterior.
-                        1/4,1/3,
-                        1/4,2/3,
-                        1/2,1/3,
-                        1/2,2/3,
+                    1,1,
+                    0,1,
+                    0,0,
+                    1,0,
                                     
                     // Cara Lateral Derecha.
-                        1/4,0,
-                        1/4,1/3,
-                        1/2,0,
-                        1/2,1/3,
+                        1,1,
+                        1,0,
+                        0,0,
+                        0,1,
                         
                     // Cara Inferior.
-                        1/2,1/3,
-                        1/2,2/3,
-                        3/4,1/3,
-                        3/4,2/3,
+                        0,0,
+                        0,1,
+                        1,1,
+                        1,0,
                                     
                     // Cara Lateral Izquierda.
-                        3/4,1/3,
-                        3/4,2/3,
-                        1,1/3,
-                        1,2/3
+                        1,1,
+                        1,0,
+                        0,0,
+                        0,1,
                     ];
 
-                    for(var i = 0; i < 24 ; i += 4){
+
+                    this.index_list = [
+                        //top
+                        0,1,2,
+                        0,2,3,
+                        //left
+                        5,4,6,
+                        6,4,7,
+                        //right
+                        8,9,10,
+                        8,10,11,
+                        //front
+                        13,12,14,
+                        15,14,12,
+                        //back
+                        16,17,18,
+                        16,18,19,
+                        //bottom
+                        21,20,22,
+                        22,20,23
+                    ]
+
+                  /*  for(var i = 0; i < 24 ; i += 4){
 			
                         this.index_list.push(...[i, (i + 1), (i + 2), i, (i + 2), (i + 3)]);
-                    }
+                    }*/
     
     }
 

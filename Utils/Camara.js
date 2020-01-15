@@ -155,7 +155,7 @@ class Camara{
         if (alfa<0) alfa=Math.PI*2;
         if (alfa>Math.PI*2) alfa=0;
 
-        if (beta<  -Math.PI/2 +0.08) beta = -Math.PI/2 + 0.08;
+        //if (beta<  -Math.PI/2 +0.08) beta = -Math.PI/2 + 0.08;
         if( beta >= 0.0 ) beta =  -beta ;
        
         /** Camara update */   

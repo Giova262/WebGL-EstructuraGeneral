@@ -2,8 +2,11 @@ class Prototipo{
 
     constructor(){
 
-        var geometria = new Plano(200,200,[1,0.2,0.6]);
-        this.plano = new Objeto(geometria);
+      /*  var geo_plano = new Plano(200,200,[1,0.2,0.6]);
+        this.plano = new Objeto(geo_plano);*/
+
+        var geo_rectangulo = new Rectangulo(10,10,10,[0.5,0.5,0.5],20,20);
+        this.plano = new Objeto(geo_rectangulo);
 
         this.configuracion();
     }
@@ -17,8 +20,8 @@ class Prototipo{
 
         /** Estilo */
         this.plano.textura(true);
-        this.plano.normalMap(true);
-        this.plano.relieve(true);
+        this.plano.normalMap(false);
+        this.plano.relieve(false);
         this.plano.animacion(false);
 
         /** Iluminacion */
