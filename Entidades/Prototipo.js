@@ -5,7 +5,7 @@ class Prototipo{
       /*  var geo_plano = new Plano(200,200,[1,0.2,0.6]);
         this.plano = new Objeto(geo_plano);*/
 
-        var geo_rectangulo = new Rectangulo(10,10,10,[0.5,0.5,0.5],20,20);
+        var geo_rectangulo = new Rectangulo(10,10,10,[0.5,0.5,0.5]);
         this.plano = new Objeto(geo_rectangulo);
 
         this.configuracion();
@@ -25,7 +25,7 @@ class Prototipo{
         this.plano.animacion(false);
 
         /** Iluminacion */
-        this.plano.phongCoheficientes(1,1,1,60);
+        this.plano.phongCoheficientes(0.2,1,0.2,60);
 
         /** Movimientos iniciales */
         this.plano.escalar([1,1,1]);

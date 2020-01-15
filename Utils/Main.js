@@ -59,7 +59,7 @@ var     canvas = null;
 
         camara = null;
         prototipo = null;
-        
+        sol = null;
 
 /** Inicio */
 function main(){
@@ -81,6 +81,7 @@ function initObjects(){
 
     /** Escena */
     prototipo = new Prototipo();
+    sol = new Sol();
    
 }
 
@@ -94,14 +95,19 @@ function draw(){
 
     /** Update */
     if(run){
-        tiempo += 200;     
+        tiempo += 200;  
+        sol.update();     
     }
 
     /** Offset */
     offset +=  0.0001; 
     if( offset >= 1) offset = 0.0;
+
+     /** Iluminacion  sol.getPosition()*/
+     gl.uniform3f(lightPosLocation, ...sol.getPosition()  );
     
     /** Dibujo */
+    sol.dibujar();
     prototipo.dibujar();
 }
 
