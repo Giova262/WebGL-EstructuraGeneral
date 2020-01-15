@@ -74,7 +74,7 @@ class SuperficieDeRevolucion extends Dibujable{
         /** Atributos */
         for(var i=0 ; i < this.curva.length ; i = i +3){
 
-            for(var j=0 ; j<this.puntosRevolucion;j++){
+            for(var j=0 ; j<this.puntosRevolucion ;j++){
 
                 var posicion = vec3.fromValues(this.curva[i], this.curva[i+1], this.curva[i+2]);
                 var tangente = vec3.fromValues(this.curvaTangentes[i], this.curvaTangentes[i+1], this.curvaTangentes[i+2]);
@@ -95,8 +95,9 @@ class SuperficieDeRevolucion extends Dibujable{
                 this.position_list.push(...[posicion[0], posicion[1], posicion[2]]);     
                 this.normal_list.push( ...normal);
                 this.tangente_list.push(...[tangente[0], tangente[1], tangente[2]]);
-                this.texture_list.push( j / this.puntosRevolucion );
-                this.texture_list.push( 1 - ( i / this.curva.length ) );         
+
+                this.texture_list.push( 1- (j / this.puntosRevolucion) );
+                this.texture_list.push( ( i / this.curva.length)  );         
             } 
         }
 
@@ -107,7 +108,7 @@ class SuperficieDeRevolucion extends Dibujable{
             for(var j = 0 ; j< this.puntosRevolucion-1 ; j++){
 
                 this.index_list.push(j + jump );
-                this.index_list.push(this.puntosRevolucion + j + jump );      
+                this.index_list.push(this.puntosRevolucion + j + jump );       
             }
 
             jump = jump + this.puntosRevolucion;        
