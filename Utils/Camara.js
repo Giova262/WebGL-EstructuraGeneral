@@ -1,14 +1,12 @@
-/** Arreglar Bug del zoom o usar la camara de Three.js*/
+/** Camara class */
 
 var previousClientX = 0,
     previousClientY = 0,
-    radio = 800,
-    radio2 = 0;
-    escala= 1.0;
-    /*alfa = Math.PI, 
-    beta = Math.PI/4.0, */
+    radio = 400,  //De la orbital
+    //radio2 = 50;
+    escala= 1;
     alfa = Math.PI/2, 
-    beta = Math.PI/2, 
+    beta = Math.PI/2+0.1, 
     factorVelocidad = 0.01;
     ZOOM = 0.007;
 
@@ -25,22 +23,20 @@ var previousClientX = 0,
 
     avanzar = false;
     retoceder = false;
+    izq = false;
+    der = false;
 
     x2 = 0;
     y2= 0;
     parar = false;
 
-    pasoEscala = 0.01;
-    contador = 0;
-
 
 class Camara{
 
-    constructor(){
-        
-    }
+    constructor(){}
 
     event(){
+
         /** Guardo posicion del mouse dentro del canvas */
         $("#canvas").mousemove(function(e){     
             mouseX = e.clientX || e.pageX; 
@@ -49,7 +45,8 @@ class Camara{
 
         /** Evaluo si presione el boton del mouse dentro del canvas */
         $("#canvas").mousedown(function(e){
-            isMouseDown = true;       
+            isMouseDown = true;
+            
         });
 
         /** Pongo false si suelto el boton del mouse */
@@ -63,11 +60,11 @@ class Camara{
               
             // Chrome
             if(e.originalEvent.wheelDelta > 0) {
-                escala = escala - pasoEscala; 
+                escala = escala - 0.00002; 
                 if( escala <= 0.01 ) escala = 0.01 ;
                 
             }else  if( e.originalEvent.wheelDelta < 0 ){ 
-                escala = escala + pasoEscala; 
+                escala = escala + 0.00002; 
                 if( escala >= 1.0 ) escala = 1.0 ;          
             }
 
@@ -78,11 +75,11 @@ class Camara{
         /** Eventos disparados por el teclado */
         window.addEventListener("keydown", function (e) {
             if ( e.keyCode == 90) {
-                escala = escala - pasoEscala; 
+                escala = escala - 0.00002; 
                 if( escala <= 0.01 ) escala = 0.01 ;
             }
             if ( e.keyCode == 88) {
-                escala = escala + pasoEscala; 
+                escala = escala + 0.00002; 
                 if( escala >= 1.0 ) escala = 1.0 ; 
             }
             if ( e.keyCode == 49) {
@@ -106,25 +103,37 @@ class Camara{
 
             // Movimientos
             if ( e.keyCode == 87) { // w
-                radio2-=0.0001;    
+        
                 avanzar = true;
+                console.log('w')
             }
             if ( e.keyCode == 83) { //s
-                radio2+=0.0001;    
+               
                 retoceder = true;   
+                console.log('s')
             }
             if ( e.keyCode == 65) { //a
                        
+                izq = true;  
+                console.log('a')
             }
             if ( e.keyCode == 68) { //d
+
+                der = true;  
+                console.log('d')
                        
             }
             
         }, true);
           
+
+     
     }
 
     update(){
+
+        if(tipoCamara == 0) this.orbital();
+        if(tipoCamara == 1) this.primeraPersona();
 
         if(isMouseDown) {
 
@@ -140,16 +149,11 @@ class Camara{
             previousClientX = mouseX;
             previousClientY = mouseY;
     
-         
+            /** Calculo de alfa y beta */
             alfa = alfa - deltaX * factorVelocidad;
             beta = beta - deltaY * factorVelocidad;
             
         } 
-
-        //console.log(escala);
-        if(tipoCamara == 0) this.orbital();
-        if(tipoCamara == 1) this.primeraPersona();
-         
     }
 
     orbital(){
@@ -157,20 +161,20 @@ class Camara{
         if (alfa<0) alfa=Math.PI*2;
         if (alfa>Math.PI*2) alfa=0;
 
-        //if (beta<  -Math.PI/2 +0.08) beta = -Math.PI/2 + 0.08;
+        if (beta<  -Math.PI/2 +0.04) beta = -Math.PI/2 + 0.04;
         if( beta >= 0.0 ) beta =  -beta ;
-       
+
         /** Camara update */   
         var x = radio * escala * Math.cos(alfa) * Math.sin(beta);
         var y = radio * escala * Math.sin(alfa) * Math.sin(beta);
         var z = radio * escala * Math.cos(beta);
 
-        mat4.lookAt(viewMatrix, [x, y, z], [0, 0, 0], [0,0,1]);
+        mat4.lookAt(viewMatrix, [x, y, z], [0, 0, 20], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix);
         
         gl.uniform3f(cameraPosLocation,x,y,z);
 
-        radio2 = 0;
+        //radio2 = 0;
         x2 = 0;
         y2= 0;
     }
@@ -180,25 +184,40 @@ class Camara{
         var x = radio  * escala * Math.cos(alfa) * Math.sin(beta);
         var y = radio  * escala * Math.sin(alfa) * Math.sin(beta);
         var z = radio * escala * Math.cos(beta);
+
+
+        var direccion = [Math.cos(alfa),Math.sin(alfa)]
+        var direccionTangente = [-Math.sin(alfa),Math.cos(alfa)]
    
         if(avanzar){   
-             x2 += radio2   * Math.cos(alfa);
-             y2 += radio2   * Math.sin(alfa);        
+             x2  = -2 * direccion[0] + x2
+             y2  = -2 * direccion[1] + y2
         }
         if(retoceder){
-            x2 -= radio2   * Math.cos(alfa);
-            y2 -= radio2   * Math.sin(alfa);   
+
+            x2  = 2 * direccion[0] + x2
+            y2  = 2 * direccion[1] + y2
         }
+
+        if(izq){   
+            x2  = -2 * direccionTangente[0] + x2
+            y2  = -2 * direccionTangente[1] + y2
+       }
+       if(der){
+
+            x2  = 2 * direccionTangente[0] + x2
+            y2  = 2 * direccionTangente[1] + y2
+       }
 
         var distancia = Math.sqrt(Math.pow(x2, 2.0) + Math.pow(y2, 2.0) ); 
      
-        if( distancia >= 80 ) {
-            x2 = 0;
-            y2 = 0 ;
-        }
-
+       //TODO : cambiar esto por esta apretando el boton o no en windown listener
         avanzar = false;
         retoceder = false;
+        izq = false;
+        der = false;
+
+        //console.log('Valores de la finales :' + x2 + ' ' +y2)
 
         mat4.lookAt(viewMatrix, [x2, y2, 15], [x, y, z], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix); 
