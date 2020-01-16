@@ -2,9 +2,9 @@
 
 var previousClientX = 0,
     previousClientY = 0,
-    radio = 400,  //De la orbital
+    radio = 800,  //De la orbital
     //radio2 = 50;
-    escala= 1;
+    escala= 1.0;
     alfa = Math.PI/2, 
     beta = Math.PI/2+0.1, 
     factorVelocidad = 0.01;
@@ -26,9 +26,11 @@ var previousClientX = 0,
     izq = false;
     der = false;
 
-    x2 = 0;
-    y2= 0;
+    x2 =50;
+    y2= 50;
     parar = false;
+
+    firstPersonBoolean = false
 
 
 class Camara{
@@ -60,12 +62,14 @@ class Camara{
               
             // Chrome
             if(e.originalEvent.wheelDelta > 0) {
-                escala = escala - 0.00002; 
-                if( escala <= 0.01 ) escala = 0.01 ;
+                escala = escala - 0.02; 
+              
+                //if( escala <= 0.01 ) escala = 0.01 ;
                 
             }else  if( e.originalEvent.wheelDelta < 0 ){ 
-                escala = escala + 0.00002; 
-                if( escala >= 1.0 ) escala = 1.0 ;          
+                escala = escala + 0.02; 
+            
+                //if( escala >= 1.0 ) escala = 1.0 ;          
             }
 
              /** Para evitar el scroll del fondo dentro del canvas */
@@ -75,18 +79,20 @@ class Camara{
         /** Eventos disparados por el teclado */
         window.addEventListener("keydown", function (e) {
             if ( e.keyCode == 90) {
-                escala = escala - 0.00002; 
-                if( escala <= 0.01 ) escala = 0.01 ;
+              /*  escala = escala - 0.00002; 
+                console.log('Rueda')*/
+               // if( escala <= 0.01 ) escala = 0.01 ;
             }
             if ( e.keyCode == 88) {
-                escala = escala + 0.00002; 
-                if( escala >= 1.0 ) escala = 1.0 ; 
+              /*  escala = escala + 0.00002; 
+                console.log('Rueda')*/
+               // if( escala >= 1.0 ) escala = 1.0 ; 
             }
             if ( e.keyCode == 49) {
                 tipoCamara = 0 ;        
             }
             if ( e.keyCode == 50) {
-                tipoCamara = 1 ;        
+                tipoCamara = 1 ;    
             }
             if ( e.keyCode == 51) {
                 tipoCamara = 2 ;        
@@ -174,9 +180,6 @@ class Camara{
         
         gl.uniform3f(cameraPosLocation,x,y,z);
 
-        //radio2 = 0;
-        x2 = 0;
-        y2= 0;
     }
 
     primeraPersona(){
@@ -185,6 +188,7 @@ class Camara{
         var y = radio  * escala * Math.sin(alfa) * Math.sin(beta);
         var z = radio * escala * Math.cos(beta);
 
+    
 
         var direccion = [Math.cos(alfa),Math.sin(alfa)]
         var direccionTangente = [-Math.sin(alfa),Math.cos(alfa)]
@@ -209,19 +213,20 @@ class Camara{
             y2  = 2 * direccionTangente[1] + y2
        }
 
-        var distancia = Math.sqrt(Math.pow(x2, 2.0) + Math.pow(y2, 2.0) ); 
+        //var distancia = Math.sqrt(Math.pow(x2, 2.0) + Math.pow(y2, 2.0) ); 
      
        //TODO : cambiar esto por esta apretando el boton o no en windown listener
         avanzar = false;
         retoceder = false;
         izq = false;
         der = false;
-
         //console.log('Valores de la finales :' + x2 + ' ' +y2)
 
-        mat4.lookAt(viewMatrix, [x2, y2, 15], [x, y, z], [0,0,1]);
+        mat4.lookAt(viewMatrix, [x2, y2,50], [x, y, z], [0,0,1]);
         gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix); 
         gl.uniform3f(cameraPosLocation,...[x2, y2, 15]);
+
+
 
     }
 
